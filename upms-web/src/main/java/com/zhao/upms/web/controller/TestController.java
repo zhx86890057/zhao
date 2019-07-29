@@ -15,11 +15,13 @@ public class TestController {
     private TestMapper testMapper;
 
     @GetMapping("/test")
-    public Test test(){
+    public int test(){
         Test test = new Test();
         test.setModifyTime(new Date());
         testMapper.insert(test);
-        return testMapper.selectByPrimaryKey(2);
+        test.setId(1);
+        test.setCreatTime(new Date());
+        return testMapper.updateByPrimaryKey(test);
     }
 
 }
