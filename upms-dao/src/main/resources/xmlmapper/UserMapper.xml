@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhao.dao.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.zhao.dao.domain.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="wxuserid" property="wxuserid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="head" property="head" jdbcType="VARCHAR" />
+    <result column="departid" property="departid" jdbcType="VARCHAR" />
+    <result column="is_subscribe" property="is_subscribe" jdbcType="INTEGER" />
+    <result column="user_no" property="user_no" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="usertype" property="usertype" jdbcType="INTEGER" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+    <result column="join_date" property="join_date" jdbcType="TIMESTAMP" />
+    <result column="duty_type" property="duty_type" jdbcType="VARCHAR" />
+    <result column="school_name" property="school_name" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhao.dao.domain.User" >
+    insert into user (id, userid, wxuserid, 
+      name, head, departid, 
+      is_subscribe, user_no, cellphone, 
+      usertype, gender, join_date, 
+      duty_type, school_name)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{wxuserid,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{head,jdbcType=VARCHAR}, #{departid,jdbcType=VARCHAR}, 
+      #{is_subscribe,jdbcType=INTEGER}, #{user_no,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR},
+      #{usertype,jdbcType=INTEGER}, #{gender,jdbcType=INTEGER}, #{join_date,jdbcType=TIMESTAMP},
+      #{duty_type,jdbcType=VARCHAR}, #{school_name,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhao.dao.domain.User" >
+    update user
+    set userid = #{userid,jdbcType=VARCHAR},
+      wxuserid = #{wxuserid,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      head = #{head,jdbcType=VARCHAR},
+      departid = #{departid,jdbcType=VARCHAR},
+      is_subscribe = #{is_subscribe,jdbcType=INTEGER},
+      user_no = #{user_no,jdbcType=VARCHAR},
+      cellphone = #{cellphone,jdbcType=VARCHAR},
+      usertype = #{usertype,jdbcType=INTEGER},
+      gender = #{gender,jdbcType=INTEGER},
+      join_date = #{join_date,jdbcType=TIMESTAMP},
+      duty_type = #{duty_type,jdbcType=VARCHAR},
+      school_name = #{school_name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, userid, wxuserid, name, head, departid, is_subscribe, user_no, cellphone, 
+    usertype, gender, join_date, duty_type, school_name
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, userid, wxuserid, name, head, departid, is_subscribe, user_no, cellphone, 
+    usertype, gender, join_date, duty_type, school_name
+    from user
+  </select>
+
+  <insert id="insertBatch" >
+    insert into user (id, userid, wxuserid,
+      name, head, departid,
+      is_subscribe, user_no, cellphone,
+      usertype, gender, join_date,
+      duty_type, school_name)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.userid,jdbcType=VARCHAR}, #{item.wxuserid,jdbcType=VARCHAR},
+      #{item.name,jdbcType=VARCHAR}, #{item.head,jdbcType=VARCHAR}, #{item.departid,jdbcType=VARCHAR},
+      #{item.is_subscribe,jdbcType=INTEGER}, #{item.user_no,jdbcType=VARCHAR}, #{item.cellphone,jdbcType=VARCHAR},
+      #{item.usertype,jdbcType=INTEGER}, #{item.gender,jdbcType=INTEGER}, #{item.join_date,jdbcType=TIMESTAMP},
+      #{item.duty_type,jdbcType=VARCHAR}, #{item.school_name,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+</mapper>
