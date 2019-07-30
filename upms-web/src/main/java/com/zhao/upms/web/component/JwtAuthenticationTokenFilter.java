@@ -1,6 +1,6 @@
 package com.zhao.upms.web.component;
 
-import com.macro.mall.util.JwtTokenUtil;
+import com.zhao.upms.web.utils.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

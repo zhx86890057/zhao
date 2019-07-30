@@ -1,6 +1,7 @@
 package com.zhao.upms.web.component;
 
-import com.macro.mall.common.api.CommonResult;
+import com.zhao.upms.common.api.CommonResult;
+import com.zhao.upms.common.api.ResultCode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,13 +13,12 @@ import org.springframework.validation.FieldError;
 
 /**
  * HibernateValidator错误结果处理切面
- * Created by macro on 2018/4/26.
  */
 @Aspect
 @Component
 @Order(2)
 public class BindingResultAspect {
-    @Pointcut("execution(public * com.macro.mall.controller.*.*(..))")
+    @Pointcut("execution(public * com.zhao.upms.web.controller.*.*(..))")
     public void BindingResult() {
     }
 
@@ -31,9 +31,9 @@ public class BindingResultAspect {
                 if (result.hasErrors()) {
                     FieldError fieldError = result.getFieldError();
                     if(fieldError!=null){
-                        return CommonResult.validateFailed(fieldError.getDefaultMessage());
+                        return CommonResult.failed(ResultCode.VALIDATE_FAILED.getCode(), fieldError.getDefaultMessage());
                     }else{
-                        return CommonResult.validateFailed();
+                        return CommonResult.failed(ResultCode.VALIDATE_FAILED);
                     }
                 }
             }

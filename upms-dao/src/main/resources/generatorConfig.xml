@@ -38,6 +38,6 @@
         </javaClientGenerator>
 
         <!--对应数据库表名，多个表，请复制指定 -->
-        <table tableName="test"></table>
+        <table tableName="sys_permission"></table>
     </context>
 </generatorConfiguration>

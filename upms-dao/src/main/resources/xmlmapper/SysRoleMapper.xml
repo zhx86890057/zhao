@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhao.dao.mapper.SysRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.zhao.dao.domain.SysRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhao.dao.domain.SysRole" >
+    insert into sys_role (id, name, description, 
+      create_time, modify_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhao.dao.domain.SysRole" >
+    update sys_role
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, name, description, create_time, modify_time
+    from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, description, create_time, modify_time
+    from sys_role
+  </select>
+  <select id="selectByPermissionId" resultType="com.zhao.dao.vo.RoleVO">
+    select r.id, r.name, r.description, r.create_time, r.modify_time, rp.permission_id permissionId
+    from sys_role r, sys_role_permission_relation rp
+    where r.id = rp.role_id
+    and rp.permission_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+  <select id="selectByUserId" resultType="com.zhao.dao.vo.RoleVO" parameterType="java.lang.Long">
+    select r.id, r.name, r.description, r.create_time, r.modify_time, ur.user_id userId
+    from sys_role r, sys_user_role ur
+    where r.id = ur.role_id
+    and ur.user_id = #{userId}
+  </select>
+</mapper>

@@ -1,4 +1,4 @@
-package com.zhao.upms.web.component;
+package com.zhao.upms.web.security;
 
 import com.alibaba.fastjson.JSON;
 import com.zhao.upms.common.api.CommonResult;
