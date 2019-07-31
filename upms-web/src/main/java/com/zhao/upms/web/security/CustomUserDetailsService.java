@@ -35,13 +35,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("user not found");
         }
-        List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-        List<RoleVO> userAuthList = sysRoleMapper.selectByUserId(user.getId());
-        if (userAuthList != null) {
-            for (RoleVO userAuth : userAuthList) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + userAuth.getName()));
-            }
-        }
-        return new User(user.getUsername(), user.getPassword(), authorities);
+        List<RoleVO> roleVOList = sysRoleMapper.selectByUserId(user.getId());
+
+        return new SysUserDetails(user, roleVOList);
     }
 }

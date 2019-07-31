@@ -2,6 +2,7 @@ package com.zhao.upms.web.security;
 
 import com.zhao.dao.domain.SysPermission;
 import com.zhao.dao.domain.SysUser;
+import com.zhao.dao.vo.RoleVO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,20 +16,17 @@ import java.util.stream.Collectors;
  */
 public class SysUserDetails implements UserDetails {
     private SysUser sysUser;
-    private List<SysPermission> permissionList;
+    private List<RoleVO> roleVOList;
 
-    public SysUserDetails(SysUser sysUser,List<SysPermission> permissionList) {
+    public SysUserDetails(SysUser sysUser,List<RoleVO> roleVOList) {
         this.sysUser = sysUser;
-        this.permissionList = permissionList;
+        this.roleVOList = roleVOList;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
-        return permissionList.stream()
-                .filter(permission -> permission.getUrl()!=null)
-                .map(permission ->new SimpleGrantedAuthority(permission.getUrl()))
-                .collect(Collectors.toList());
+        return roleVOList.stream().map(s -> new SimpleGrantedAuthority("ROLE_" + s.getName())).collect(Collectors.toList());
     }
 
     @Override

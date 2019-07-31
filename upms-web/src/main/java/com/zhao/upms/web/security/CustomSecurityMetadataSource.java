@@ -13,7 +13,6 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -23,13 +22,12 @@ import java.util.stream.Collectors;
 public class CustomSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     private Map<String, List<ConfigAttribute>> resources;
-
-    @Autowired
     private SysPermissionMapper sysPermissionMapper;
-    @Autowired
     private SysRoleMapper sysRoleMapper;
 
-    public CustomSecurityMetadataSource() {
+    public CustomSecurityMetadataSource(SysPermissionMapper sysPermissionMapper, SysRoleMapper sysRoleMapper) {
+        this.sysPermissionMapper = sysPermissionMapper;
+        this.sysRoleMapper = sysRoleMapper;
         loadAuthorityResources();
     }
 

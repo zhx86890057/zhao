@@ -1,12 +1,20 @@
 package com.zhao.dao.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysUser {
     private Long id;
-
+    @NotBlank(message = "用户名不能为空")
     private String username;
-
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     private String email;
