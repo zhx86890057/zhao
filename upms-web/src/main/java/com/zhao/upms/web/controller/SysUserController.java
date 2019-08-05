@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +47,7 @@ public class SysUserController {
         return CommonResult.success(token);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @ApiOperation(value = "刷新token")
     @RequestMapping(value = "/token/refresh", method = RequestMethod.GET)
     public CommonResult refreshToken(HttpServletRequest request) {
