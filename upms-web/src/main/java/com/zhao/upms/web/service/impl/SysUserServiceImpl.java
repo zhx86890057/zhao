@@ -5,11 +5,9 @@ import com.zhao.dao.mapper.SysUserMapper;
 import com.zhao.upms.common.api.CommonException;
 import com.zhao.upms.common.api.ResultCode;
 import com.zhao.upms.web.service.SysUserService;
-import com.zhao.upms.web.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -20,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -28,8 +25,6 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Value("${jwt.tokenHead}")
@@ -70,7 +65,7 @@ public class SysUserServiceImpl implements SysUserService {
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenUtil.generateToken(userDetails);
+
 //            updateLoginTimeByUsername(username);
         } catch (AuthenticationException e) {
             log.warn("登录异常:{}", e.getMessage());
@@ -81,9 +76,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public String refreshToken(String oldToken) {
         String token = oldToken.substring(tokenHead.length());
-        if (jwtTokenUtil.canRefresh(token)) {
-            return jwtTokenUtil.refreshToken(token);
-        }
+
         return null;
     }
 }
