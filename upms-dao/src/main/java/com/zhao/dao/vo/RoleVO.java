@@ -12,9 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleVO {
-    private Integer id;
-
-    private String name;
+    private String id;
 
     private String description;
 

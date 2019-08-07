@@ -3,7 +3,7 @@ package com.zhao.dao.domain;
 public class SysRolePermissionRelation {
     private Integer id;
 
-    private Integer roleId;
+    private String roleId;
 
     private Integer permissionId;
 
@@ -15,11 +15,11 @@ public class SysRolePermissionRelation {
         this.id = id;
     }
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

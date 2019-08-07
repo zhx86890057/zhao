@@ -46,7 +46,7 @@ public class CustomSecurityMetadataSource implements FilterInvocationSecurityMet
                     Integer id = s.getId();
                     if(map.containsKey(id)){
                         List<RoleVO> roleVOS = map.get(id);
-                        List<ConfigAttribute> authorityList = roleVOS.stream().map(r -> new SecurityConfig(r.getName())).collect(Collectors.toList());
+                        List<ConfigAttribute> authorityList = roleVOS.stream().map(r -> new SecurityConfig(r.getId())).collect(Collectors.toList());
                         resources.put(s.getUrl(),authorityList);
                     }
                 });

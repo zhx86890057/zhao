@@ -5,7 +5,7 @@ public class SysUserRole {
 
     private Long userId;
 
-    private Integer roleId;
+    private String roleId;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class SysUserRole {
         this.userId = userId;
     }
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 }
