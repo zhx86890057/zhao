@@ -3,7 +3,7 @@
 <mapper namespace="com.zhao.dao.mapper.SysRolePermissionRelationMapper" >
   <resultMap id="BaseResultMap" type="com.zhao.dao.domain.SysRolePermissionRelation" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
     <result column="permission_id" property="permissionId" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -13,12 +13,12 @@
   <insert id="insert" parameterType="com.zhao.dao.domain.SysRolePermissionRelation" >
     insert into sys_role_permission_relation (id, role_id, permission_id
       )
-    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{permissionId,jdbcType=INTEGER}
+    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=VARCHAR}, #{permissionId,jdbcType=INTEGER}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.zhao.dao.domain.SysRolePermissionRelation" >
     update sys_role_permission_relation
-    set role_id = #{roleId,jdbcType=INTEGER},
+    set role_id = #{roleId,jdbcType=VARCHAR},
       permission_id = #{permissionId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>

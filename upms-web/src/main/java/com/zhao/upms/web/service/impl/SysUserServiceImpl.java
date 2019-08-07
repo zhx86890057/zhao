@@ -27,8 +27,6 @@ public class SysUserServiceImpl implements SysUserService {
     private UserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
     @Autowired
     private SysUserMapper sysUserMapper;
 
@@ -75,8 +73,6 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public String refreshToken(String oldToken) {
-        String token = oldToken.substring(tokenHead.length());
-
         return null;
     }
 }

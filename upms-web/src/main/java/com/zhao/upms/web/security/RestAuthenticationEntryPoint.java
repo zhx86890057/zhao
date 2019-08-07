@@ -1,6 +1,7 @@
 package com.zhao.upms.web.security;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.zhao.upms.common.api.CommonResult;
 import com.zhao.upms.common.api.ResultCode;
 import org.springframework.security.core.AuthenticationException;
@@ -22,7 +23,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println(JSON.toJSONString(CommonResult.failed(ResultCode.UNAUTHORIZED.getCode(),authException.getMessage())));
+        response.getWriter().println(JSON.toJSONString(CommonResult.failed(ResultCode.UNAUTHORIZED), SerializerFeature.WriteMapNullValue));
         response.getWriter().flush();
     }
 }
