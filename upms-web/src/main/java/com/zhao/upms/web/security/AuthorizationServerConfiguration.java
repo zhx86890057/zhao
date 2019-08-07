@@ -61,7 +61,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//        oauthServer.checkTokenAccess("isAuthenticated()");
+//        oauthServer.checkTokenAccess("isAuthenticated()");//isAuthenticated():排除anonymous isFullyAuthenticated():排除anonymous以及remember-me
         oauthServer.checkTokenAccess("permitAll()");
         //允许表单认证
         oauthServer.allowFormAuthenticationForClients();

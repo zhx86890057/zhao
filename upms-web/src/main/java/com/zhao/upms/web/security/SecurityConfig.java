@@ -103,13 +103,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomUserDetailsService();
     }
 
-    @Bean
-    public FilterSecurityInterceptor customFilterSecurityInterceptor() {
-        FilterSecurityInterceptor fsi = new FilterSecurityInterceptor();
-        fsi.setAccessDecisionManager(customAccessDecisionManager);
-        fsi.setSecurityMetadataSource(securityMetadataSource());
-        return fsi;
-    }
+//    @Bean
+//    public FilterSecurityInterceptor customFilterSecurityInterceptor() {
+//        FilterSecurityInterceptor fsi = new FilterSecurityInterceptor();
+//        fsi.setAccessDecisionManager(customAccessDecisionManager);
+//        fsi.setSecurityMetadataSource(securityMetadataSource());
+//        return fsi;
+//    }
 
     @Bean
     public FilterInvocationSecurityMetadataSource securityMetadataSource() {
@@ -118,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() {
         AuthenticationManager authenticationManager = new ProviderManager(Arrays.asList(authenticationProvider()));
         return authenticationManager;
     }
