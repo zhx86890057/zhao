@@ -2,7 +2,6 @@ package com.zhao.upms.web.security;
 
 import com.zhao.dao.mapper.SysPermissionMapper;
 import com.zhao.dao.mapper.SysRoleMapper;
-import com.zhao.upms.web.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,14 +20,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -39,12 +33,12 @@ import java.util.List;
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-    @Autowired
-    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
-    @Autowired
-    private CustomAccessDecisionManager customAccessDecisionManager;
+//    @Autowired
+//    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+//    @Autowired
+//    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+//    @Autowired
+//    private CustomAccessDecisionManager customAccessDecisionManager;
     @Autowired
     private SysPermissionMapper sysPermissionMapper;
     @Autowired
@@ -54,29 +48,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf()
                 .disable()
                 .sessionManagement()// 基于token，所以不需要session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
-                        "/",
-                        "/*.html",
-                        "/favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/swagger-resources/**",
-                        "/v2/api-docs/**"
-                )
-                .permitAll()
-                .antMatchers("/user/loginPwd", "/admin/register")// 对登录注册要允许匿名访问
-                .permitAll()
-                .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
-                .permitAll()
-                .antMatchers("/oauth/**").permitAll()
-//                .antMatchers("/**")//测试时全部运行访问
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/user/loginPwd", "/admin/register")// 对登录注册要允许匿名访问
 //                .permitAll()
-                .anyRequest()// 除上面外的所有请求全部需要鉴权认证
-                .authenticated();
+//                .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
+//                .permitAll()
+//                .antMatchers("/oauth/**").permitAll()
+////                .antMatchers("/**")//测试时全部运行访问
+////                .permitAll()
+//                .anyRequest()// 除上面外的所有请求全部需要鉴权认证
+//                .authenticated();
         // 禁用缓存
         httpSecurity.headers().cacheControl();
 
@@ -86,6 +69,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        httpSecurity.exceptionHandling()
 //                .accessDeniedHandler(restfulAccessDeniedHandler)
 //                .authenticationEntryPoint(restAuthenticationEntryPoint);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
+                "/",
+                "/*.html",
+                "/favicon.ico",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js",
+                "/swagger-resources/**",
+                "/v2/api-docs/**");
     }
 
     @Override
@@ -104,8 +100,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 //    @Bean
-//    public FilterSecurityInterceptor customFilterSecurityInterceptor() {
-//        FilterSecurityInterceptor fsi = new FilterSecurityInterceptor();
+//    public CustomFilterSecurityIntercepor customFilterSecurityInterceptor() {
+//        CustomFilterSecurityIntercepor fsi = new CustomFilterSecurityIntercepor();
 //        fsi.setAccessDecisionManager(customAccessDecisionManager);
 //        fsi.setSecurityMetadataSource(securityMetadataSource());
 //        return fsi;

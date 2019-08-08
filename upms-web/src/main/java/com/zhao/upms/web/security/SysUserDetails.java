@@ -1,6 +1,5 @@
 package com.zhao.upms.web.security;
 
-import com.zhao.dao.domain.SysPermission;
 import com.zhao.dao.domain.SysUser;
 import com.zhao.dao.vo.RoleVO;
 import org.springframework.security.core.GrantedAuthority;
