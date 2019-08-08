@@ -1,12 +1,15 @@
 package com.zhao.dao.vo;
 
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class PageInfo {
-    private Integer page;
-
-    private Integer size;
-
-    private Integer total;
+@Builder
+public class PageInfo<T> {
+    private int pageNum;
+    private int pageSize;
+    private int total;
+    private List<T> list;
 }
