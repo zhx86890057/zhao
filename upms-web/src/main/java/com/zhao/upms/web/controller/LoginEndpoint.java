@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
@@ -44,6 +45,8 @@ public class LoginEndpoint{
     private TokenEndpoint tokenEndpoint;
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     /**
      * 登录
      *
@@ -54,6 +57,7 @@ public class LoginEndpoint{
     @PostMapping("/user/loginPwd")
     public CommonResult<OAuth2AccessToken> loginPwd(String username, String password) {
         try {
+
             Authentication principal = new UsernamePasswordAuthenticationToken("auth-server","123456",null);
             Map<String, String> param = new LinkedHashMap<>();
             param.put("grant_type", "password");
