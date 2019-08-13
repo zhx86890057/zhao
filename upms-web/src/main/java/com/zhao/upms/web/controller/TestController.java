@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Date;
 
 @RestController
@@ -15,7 +16,7 @@ public class TestController {
     private TestMapper testMapper;
 
     @GetMapping("/test")
-    public int test(){
+    public int test(Principal user){
         Test test = new Test();
         test.setModifyTime(new Date());
         testMapper.insert(test);

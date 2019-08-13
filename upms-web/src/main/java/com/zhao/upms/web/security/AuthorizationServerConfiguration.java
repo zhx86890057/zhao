@@ -53,7 +53,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .scopes("read")                    // 允许的授权范围
                 .autoApprove(true)                  //登录后绕过批准询问(/oauth/confirm_access)
                 .secret(passwordEncoder.encode("123456") )
-                .redirectUris("http://www.baidu.com");
+                .redirectUris("http://127.0.0.1");
     }
     /**
      * 配置AuthorizationServerEndpointsConfigurer众多相关类，
