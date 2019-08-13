@@ -1,8 +1,10 @@
 package com.zhao.dao.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysPermission {
+public class SysPermission implements Serializable {
+    private static final long serialVersionUID = 477447640692312815L;
     private Integer id;
 
     private String url;

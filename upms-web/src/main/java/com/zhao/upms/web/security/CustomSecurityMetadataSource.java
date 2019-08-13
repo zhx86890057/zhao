@@ -10,7 +10,6 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
 public class CustomSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     private Map<String, List<ConfigAttribute>> resources;
@@ -47,7 +45,7 @@ public class CustomSecurityMetadataSource implements FilterInvocationSecurityMet
                     Integer id = s.getId();
                     if(map.containsKey(id)){
                         List<RoleVO> roleVOS = map.get(id);
-                        List<ConfigAttribute> authorityList = roleVOS.stream().map(r -> new SecurityConfig(r.getName())).collect(Collectors.toList());
+                        List<ConfigAttribute> authorityList = roleVOS.stream().map(r -> new SecurityConfig(r.getId())).collect(Collectors.toList());
                         resources.put(s.getUrl(),authorityList);
                     }
                 });

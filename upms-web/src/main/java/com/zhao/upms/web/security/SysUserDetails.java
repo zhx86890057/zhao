@@ -1,6 +1,5 @@
 package com.zhao.upms.web.security;
 
-import com.zhao.dao.domain.SysPermission;
 import com.zhao.dao.domain.SysUser;
 import com.zhao.dao.vo.RoleVO;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +25,7 @@ public class SysUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
-        return roleVOList.stream().map(s -> new SimpleGrantedAuthority("ROLE_" + s.getName())).collect(Collectors.toList());
+        return roleVOList.stream().map(s -> new SimpleGrantedAuthority("ROLE_" + s.getId())).collect(Collectors.toList());
     }
 
     @Override
@@ -56,6 +55,6 @@ public class SysUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return sysUser.getStatus().equals(1);
+        return 1 == sysUser.getStatus();
     }
 }

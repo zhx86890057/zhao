@@ -1,20 +1,15 @@
 package com.zhao.upms.web.security;
 
 import com.zhao.dao.domain.SysUser;
-import com.zhao.dao.domain.SysUserRole;
 import com.zhao.dao.mapper.SysRoleMapper;
 import com.zhao.dao.mapper.SysUserMapper;
-import com.zhao.dao.mapper.SysUserRoleMapper;
 import com.zhao.dao.vo.RoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

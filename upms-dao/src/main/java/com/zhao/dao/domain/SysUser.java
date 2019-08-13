@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUser {
+public class SysUser implements Serializable {
+
+    private static final long serialVersionUID = 3661917820445791077L;
     private Long id;
     @NotBlank(message = "用户名不能为空")
     private String username;

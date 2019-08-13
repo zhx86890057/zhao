@@ -21,12 +21,6 @@
                         password="123456">
         </jdbcConnection>
 
-        <!--<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://sh-cdb-26d50dce.sql.tencentcdb.com:62045/wxpay?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC"-->
-                        <!--userId="root"-->
-                        <!--password="ztengIT#$%^_^0576">-->
-        <!--</jdbcConnection>-->
-
-
         <!--生成的model 包路径 -->
         <javaModelGenerator targetPackage="com.zhao.dao.domain" targetProject="src/main/java">
             <property name="enableSubPackages" value="ture"/>
@@ -44,6 +38,6 @@
         </javaClientGenerator>
 
         <!--对应数据库表名，多个表，请复制指定 -->
-        <table tableName="news_user_mapping"></table>
+        <table tableName="sys_client_details"></table>
     </context>
 </generatorConfiguration>

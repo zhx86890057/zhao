@@ -1,9 +1,12 @@
 package com.zhao.dao.domain;
 
-public class SysRolePermissionRelation {
+import java.io.Serializable;
+
+public class SysRolePermissionRelation implements Serializable {
+    private static final long serialVersionUID = -5891561004505248463L;
     private Integer id;
 
-    private Integer roleId;
+    private String roleId;
 
     private Integer permissionId;
 
@@ -15,11 +18,11 @@ public class SysRolePermissionRelation {
         this.id = id;
     }
 
-    public Integer getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

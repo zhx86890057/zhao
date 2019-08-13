@@ -1,8 +1,5 @@
 package com.zhao.upms.web.security;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +8,9 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * 进行决策，根据URL获得访问这个资源所需要的权限，然后在与当前用户所拥有的权限进行对比

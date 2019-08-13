@@ -25,9 +25,6 @@ import java.util.Map;
 public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
-    @Value("${jwt.tokenHeader}")
-    private String tokenHeader;
-    @Value("${jwt.tokenHead}")
     private String tokenHead;
 
     @ApiOperation(value = "用户注册")
@@ -51,12 +48,8 @@ public class SysUserController {
     @ApiOperation(value = "刷新token")
     @RequestMapping(value = "/token/refresh", method = RequestMethod.GET)
     public CommonResult refreshToken(HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader);
-        String refreshToken = sysUserService.refreshToken(token);
-        if (refreshToken == null) {
-            return CommonResult.failed();
-        }
-        return CommonResult.success(refreshToken);
+
+        return null;
     }
 
     @ApiOperation(value = "获取当前登录用户信息")
