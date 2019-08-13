@@ -1,6 +1,13 @@
 package com.zhao.upms.common.api;
 
-public class CommonException extends Exception{
+/**
+ * @Description: AppWebException
+ * @Copyright: Copyright (c) 2016
+ * Author lv bin
+ * @date 2017/3/22 10:10
+ * version V1.0.0
+ */
+public class CommonException extends RuntimeException{
 
     private static final long serialVersionUID = -8198281171334131008L;
 
@@ -11,6 +18,11 @@ public class CommonException extends Exception{
     public CommonException(int errCode, String message) {
         super(message);
         this.errCode = errCode;
+    }
+
+    public CommonException(ResultCode resultCode){
+        super(resultCode.getMessage());
+        this.errCode = resultCode.getCode();
     }
 
     public int getErrCode() {
