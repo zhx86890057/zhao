@@ -1,7 +1,7 @@
 http://127.0.0.1:8080/oauth/authorize?
 response_type=code
 &client_id=auth-server
-&redirect_uri=http://www.baidu.com
+&redirect_uri=http://127.0.0.1
 &state=test
 &scope=read
 
@@ -9,14 +9,6 @@ http://127.0.0.1:8080/oauth/token?
 grant_type=authorization_code
 &client_id=auth-server
 &client_secret=123456
-&redirect_uri=http://www.baidu.com
-&code=Hd8YN7
+&redirect_uri=http://127.0.0.1
+&code=atxu7X
 &scope=read
-
-
-http://127.0.0.1:8080/oauth/authorize?
-response_type=code
-&client_id=aiyiqi
-&redirect_uri=http://www.baidu.com
-&state=test
-&scope=select

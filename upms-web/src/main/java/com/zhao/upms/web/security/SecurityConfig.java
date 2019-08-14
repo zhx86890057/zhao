@@ -5,7 +5,6 @@ import com.zhao.dao.mapper.SysRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,15 +16,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
-import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
@@ -36,7 +31,7 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -47,39 +42,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private SysPermissionMapper sysPermissionMapper;
     @Autowired
     private SysRoleMapper sysRoleMapper;
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.
-                requestMatchers()
-                // /oauth/authorize link org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint
-                // 必须登录过的用户才可以进行 oauth2 的授权码申请
-                .antMatchers("/", "/home","/login","/oauth/authorize")
-                .and()
-                .authorizeRequests()
-                .anyRequest().permitAll()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .and()
-                .httpBasic()
-                .disable()
-                .exceptionHandling()
-                .accessDeniedPage("/login?authorization_error=true")
-                .and()
-                // TODO: put CSRF protection back into this endpoint
-                .csrf()
-                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize"))
-                .disable();
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http
+                .formLogin().and()//表单登录
+                .authorizeRequests().antMatchers("/oauth/**").permitAll()
+                .antMatchers("/druid/**").permitAll()
+                .anyRequest().authenticated()
+                //禁用跨站伪造
+                .and()
+                .csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize"))
+                .disable();
+        http.headers().cacheControl();
+
+        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         //添加自定义未授权和未登录结果返回
-//        httpSecurity.exceptionHandling()
-//                .accessDeniedHandler(restfulAccessDeniedHandler)
-//                .authenticationEntryPoint(restAuthenticationEntryPoint);
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     @Override
-    public void configure(WebSecurity web) {
+    public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
                 "/",
                 "/*.html",
@@ -108,13 +95,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() {
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         AuthenticationManager authenticationManager = new ProviderManager(Arrays.asList(authenticationProvider()));
         return authenticationManager;
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -124,5 +111,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public FilterInvocationSecurityMetadataSource securityMetadataSource() {
         return new CustomSecurityMetadataSource(sysPermissionMapper, sysRoleMapper);
+    }
+
+    @Bean
+    public AuthenticationTokenFilter authenticationTokenFilter(){
+        return new AuthenticationTokenFilter();
     }
 }
