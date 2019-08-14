@@ -32,7 +32,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
-
+    private static final String QQ_RESOURCE_ID = "qq";
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
@@ -47,13 +47,30 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         //配置客户端认证
-        clients.inMemory().withClient("auth-server")
-                .authorizedGrantTypes("refresh_token","authorization_code","password")     // 该client允许的授权类型
-                .accessTokenValiditySeconds(7200)               // Token 的有效期
-                .scopes("read")                    // 允许的授权范围
-                .autoApprove(true)                  //登录后绕过批准询问(/oauth/confirm_access)
-                .secret(passwordEncoder.encode("123456") )
-                .redirectUris("http://www.baidu.com");
+//        clients.inMemory().withClient("auth-server")
+//                .authorizedGrantTypes("refresh_token","authorization_code","password")     // 该client允许的授权类型
+//                .accessTokenValiditySeconds(7200)               // Token 的有效期
+//                .scopes("read")                    // 允许的授权范围
+//                .autoApprove(true)                  //登录后绕过批准询问(/oauth/confirm_access)
+//                .secret(passwordEncoder.encode("123456") )
+//                .redirectUris("http://www.baidu.com");
+        clients.inMemory().withClient("aiqiyi")
+                .resourceIds(QQ_RESOURCE_ID)
+                .authorizedGrantTypes("authorization_code", "refresh_token", "implicit")
+                .authorities("ROLE_CLIENT")
+                .scopes("get_user_info", "get_fanslist")
+                .secret("secret")
+                .redirectUris("http://localhost:8081/aiqiyi/qq/redirect")
+                .autoApprove(true)
+                .autoApprove("get_user_info")
+                .and()
+                .withClient("youku")
+                .resourceIds(QQ_RESOURCE_ID)
+                .authorizedGrantTypes("authorization_code", "refresh_token", "implicit")
+                .authorities("ROLE_CLIENT")
+                .scopes("get_user_info", "get_fanslist")
+                .secret("secret")
+                .redirectUris("http://localhost:8082/youku/qq/redirect");
     }
     /**
      * 配置AuthorizationServerEndpointsConfigurer众多相关类，
@@ -76,9 +93,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");//isAuthenticated():排除anonymous isFullyAuthenticated():排除anonymous以及remember-me
+        //isAuthenticated():排除anonymous isFullyAuthenticated():排除anonymous以及remember-me
+//        oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
         //允许表单认证
-        oauthServer.allowFormAuthenticationForClients();
+        oauthServer.realm("qq").allowFormAuthenticationForClients();
     }
 
     @Bean

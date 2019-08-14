@@ -49,28 +49,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private SysRoleMapper sysRoleMapper;
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeRequests().antMatchers("/oauth/**").permitAll()
+        httpSecurity.
+                requestMatchers()
+                // /oauth/authorize link org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint
+                // 必须登录过的用户才可以进行 oauth2 的授权码申请
+                .antMatchers("/", "/home","/login","/oauth/authorize")
                 .and()
-                .authorizeRequests().anyRequest().authenticated()
+                .authorizeRequests()
+                .anyRequest().permitAll()
                 .and()
-                .logout().permitAll()
+                .formLogin()
+                .loginPage("/login")
                 .and()
-                .formLogin()//登录页面用户任意访问
+                .httpBasic()
+                .disable()
+                .exceptionHandling()
+                .accessDeniedPage("/login?authorization_error=true")
                 .and()
-                .csrf().disable().sessionManagement()// 基于token，所以不需要session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                // TODO: put CSRF protection back into this endpoint
+                .csrf()
+                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize"))
+                .disable();
 
-        httpSecurity.headers().cacheControl();
 
         //添加自定义未授权和未登录结果返回
-        httpSecurity.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
+//        httpSecurity.exceptionHandling()
+//                .accessDeniedHandler(restfulAccessDeniedHandler)
+//                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
                 "/",
                 "/*.html",
@@ -99,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+    public AuthenticationManager authenticationManagerBean() {
         AuthenticationManager authenticationManager = new ProviderManager(Arrays.asList(authenticationProvider()));
         return authenticationManager;
     }
