@@ -1,13 +1,11 @@
 package com.zhao.upms.web.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -16,7 +14,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
@@ -48,12 +45,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         //配置客户端认证
         clients.inMemory().withClient("auth-server")
-                .authorizedGrantTypes("refresh_token","authorization_code","password")     // 该client允许的授权类型
+                .authorizedGrantTypes("refresh_token","authorization_code","password","client_credentials")     // 该client允许的授权类型
                 .accessTokenValiditySeconds(7200)               // Token 的有效期
                 .scopes("read")                    // 允许的授权范围
                 .autoApprove(true)                  //登录后绕过批准询问(/oauth/confirm_access)
                 .secret(passwordEncoder.encode("123456") )
-                .redirectUris("http://127.0.0.1");
+                .redirectUris("http://127.0.0.1").resourceIds("auth");
     }
     /**
      * 配置AuthorizationServerEndpointsConfigurer众多相关类，

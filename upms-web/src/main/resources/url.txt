@@ -10,5 +10,5 @@ grant_type=authorization_code
 &client_id=auth-server
 &client_secret=123456
 &redirect_uri=http://127.0.0.1
-&code=atxu7X
+&code=v72ApK
 &scope=read

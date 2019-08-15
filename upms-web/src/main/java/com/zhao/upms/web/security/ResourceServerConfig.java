@@ -38,7 +38,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources.accessDeniedHandler(restfulAccessDeniedHandler);
-        resources.resourceId("auth-server");
+        resources.resourceId("auth");
         resources.authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
@@ -47,7 +47,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .requestMatchers()
             //防止被主过滤器链路拦截
             .antMatchers("/user/**").and()
-            .authorizeRequests().antMatchers("/user/loginPwd").permitAll().and()
+            .authorizeRequests().antMatchers("/user/loginPwd", "/user/loginClient").permitAll().and()
             .authorizeRequests().anyRequest().authenticated();
 
         CustomFilterSecurityIntercepor fsi = new CustomFilterSecurityIntercepor();

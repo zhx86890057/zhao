@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.security.oauth2.provider.authentication.TokenExtractor;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
@@ -32,46 +33,41 @@ import java.util.Enumeration;
 @Slf4j
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
+
     private TokenStore tokenStore;
+
+    public AuthenticationTokenFilter(UserDetailsService userDetailsService, TokenStore tokenStore){
+        this.userDetailsService = userDetailsService;
+        this.tokenStore = tokenStore;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
-        try {
-            String token = extractToken(request);
-            if (token == null) {
-                SecurityContextHolder.clearContext();
+        String token = extractToken(request);
+        if (token != null) {
+            OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
+            if (accessToken == null) {
+                throw new AuthenticationServiceException("Invalid access token: " + accessToken);
             }
-            else {
-                OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
-                if (accessToken == null) {
-                    throw new AuthenticationServiceException("Invalid access token: " + accessToken);
-                }
-                else if (accessToken.isExpired()) {
-                    tokenStore.removeAccessToken(accessToken);
-                    throw new AuthenticationServiceException("Access token expired: " + accessToken);
-                }
-                OAuth2Authentication result = tokenStore.readAuthentication(accessToken);
-                if (result == null) {
-                    throw new AuthenticationServiceException("Invalid access token: " + accessToken);
-                }
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(result.getName());
-                if(userDetails == null){
-                    throw new AuthenticationServiceException("Invalid access token: " + accessToken);
-                }
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            else if (accessToken.isExpired()) {
+                tokenStore.removeAccessToken(accessToken);
+                throw new AuthenticationServiceException("Access token expired: " + accessToken);
             }
-        }
-        catch (OAuth2Exception failed) {
-            SecurityContextHolder.clearContext();
-            return;
+            OAuth2Authentication result = tokenStore.readAuthentication(accessToken);
+            if (result == null) {
+                throw new AuthenticationServiceException("Invalid access token: " + accessToken);
+            }
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(result.getName());
+            if(userDetails == null){
+                throw new AuthenticationServiceException("Invalid access token: " + accessToken);
+            }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
     }

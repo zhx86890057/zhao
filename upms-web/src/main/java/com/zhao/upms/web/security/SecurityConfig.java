@@ -19,6 +19,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -42,7 +44,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private SysPermissionMapper sysPermissionMapper;
     @Autowired
     private SysRoleMapper sysRoleMapper;
-
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private TokenStore tokenStore;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -57,12 +62,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable();
         http.headers().cacheControl();
 
-        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthenticationTokenFilter(userDetailsService,tokenStore),
+                UsernamePasswordAuthenticationFilter.class);
 
         //添加自定义未授权和未登录结果返回
-        http.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
+//        http.exceptionHandling()
+//                .accessDeniedHandler(restfulAccessDeniedHandler)
+//                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     @Override
@@ -103,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
@@ -113,8 +119,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomSecurityMetadataSource(sysPermissionMapper, sysRoleMapper);
     }
 
-    @Bean
-    public AuthenticationTokenFilter authenticationTokenFilter(){
-        return new AuthenticationTokenFilter();
-    }
 }
