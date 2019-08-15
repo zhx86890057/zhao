@@ -1,15 +1,21 @@
 package com.zhao.upms.web.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 /*
@@ -30,16 +36,21 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     RedisConnectionFactory redisConnectionFactory;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         //配置客户端认证
         clients.inMemory().withClient("auth-server")
-                .authorizedGrantTypes("authorization_code","password")     // 该client允许的授权类型
+                .authorizedGrantTypes("refresh_token","authorization_code","password","client_credentials")     // 该client允许的授权类型
                 .accessTokenValiditySeconds(7200)               // Token 的有效期
                 .scopes("read")                    // 允许的授权范围
                 .autoApprove(true)                  //登录后绕过批准询问(/oauth/confirm_access)
-                .secret("123456");
+                .secret(passwordEncoder.encode("123456") )
+                .redirectUris("http://127.0.0.1").resourceIds("auth");
     }
     /**
      * 配置AuthorizationServerEndpointsConfigurer众多相关类，
@@ -50,18 +61,34 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authenticationManager(authenticationManager);
-        endpoints.tokenStore(new RedisTokenStore(redisConnectionFactory))
+        endpoints
+                .authenticationManager(authenticationManager)
                 .userDetailsService(customUserDetailsService)
+                .reuseRefreshTokens(false)
+                .tokenStore(tokenStore())
+                .userApprovalHandler(userApprovalHandler())
                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
     }
 
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//        oauthServer.checkTokenAccess("isAuthenticated()");//isAuthenticated():排除anonymous isFullyAuthenticated():排除anonymous以及remember-me
-        oauthServer.checkTokenAccess("permitAll()");
+        oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");//isAuthenticated():排除anonymous isFullyAuthenticated():排除anonymous以及remember-me
         //允许表单认证
         oauthServer.allowFormAuthenticationForClients();
+    }
+
+    @Bean
+    public TokenStore tokenStore() {
+        return new RedisTokenStore(redisConnectionFactory);
+    }
+
+    @Bean
+    public TokenStoreUserApprovalHandler userApprovalHandler(){
+        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
+        handler.setTokenStore(tokenStore());
+        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
+        handler.setClientDetailsService(clientDetailsService);
+        return handler;
     }
 }

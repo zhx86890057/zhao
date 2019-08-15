@@ -38,17 +38,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources.accessDeniedHandler(restfulAccessDeniedHandler);
-        resources.resourceId("auth-server");
+        resources.resourceId("auth");
         resources.authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/user/loginPwd").permitAll()// 对登录注册要允许匿名访问
-                .antMatchers(HttpMethod.OPTIONS).permitAll()//跨域请求会先进行一次options请求
-                .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/druid/**").permitAll()
-                .anyRequest().authenticated();//其他需要授权用户
-//        http.authorizeRequests().anyRequest().permitAll();  //其他的不需要登陆
+        http
+            .requestMatchers()
+            //防止被主过滤器链路拦截
+            .antMatchers("/user/**").and()
+            .authorizeRequests().antMatchers("/user/loginPwd", "/user/loginClient").permitAll().and()
+            .authorizeRequests().anyRequest().authenticated();
 
         CustomFilterSecurityIntercepor fsi = new CustomFilterSecurityIntercepor();
         fsi.setAccessDecisionManager(customAccessDecisionManager);

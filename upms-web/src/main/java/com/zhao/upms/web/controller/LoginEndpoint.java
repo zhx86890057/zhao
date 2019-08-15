@@ -8,21 +8,27 @@ import com.zhao.upms.web.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -44,6 +50,10 @@ public class LoginEndpoint{
     private TokenEndpoint tokenEndpoint;
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RestTemplate restTemplate;
     /**
      * 登录
      *
@@ -62,6 +72,24 @@ public class LoginEndpoint{
             param.put("scope", "read");
             ResponseEntity<OAuth2AccessToken> responseEntity =  tokenEndpoint.postAccessToken(principal,param);
             OAuth2AccessToken token  = responseEntity.getBody();
+            return CommonResult.success(token);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new CommonException(ResultCode.LOGIN_ERROR);
+        }
+    }
+
+    @PostMapping("/user/loginClient")
+    public CommonResult<OAuth2AccessToken> loginByClient(String clientId, String clientSecret) {
+        try {
+            MultiValueMap<String, String> params= new LinkedMultiValueMap<>();
+            params.add("grant_type", "client_credentials");
+            params.add("client_id", clientId);
+            params.add("client_secret", clientSecret);
+            params.add("scope", "read");
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity(params, new HttpHeaders());
+            OAuth2AccessToken token = restTemplate.postForObject("http://localhost:8080/oauth" +
+                    "/token", requestEntity, OAuth2AccessToken.class);
             return CommonResult.success(token);
         }catch (Exception ex){
             ex.printStackTrace();

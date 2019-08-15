@@ -5,12 +5,6 @@ import com.zhao.upms.common.api.CommonResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * @Description: 全局异常
- * Author lv bin
- * @date 2017/3/17 9:35
- * version V1.0.0
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
