@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().and()//表单登录
                 .authorizeRequests().antMatchers("/oauth/**").permitAll()
                 .antMatchers("/druid/**").permitAll()
+                .antMatchers("/wx/**").permitAll()
                 .anyRequest().authenticated()
                 //禁用跨站伪造
                 .and()

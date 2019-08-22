@@ -1,5 +1,7 @@
 package com.zhao.test;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.zhao.upms.web.UpmsApplication;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,12 +47,11 @@ public class Test2 {
     @Test
     public void test(){
         String url = "https://qyapi.weixin.qq.com/cgi-bin/service/get_provider_token";
-        MultiValueMap<String, String> params= new LinkedMultiValueMap<>();
-        params.add("corpid", "wwb74a233bc7df7597");
-        params.add("provider_secret", "t9I66qyf90SXbaUtZ_v9loNvj2-hvMZQm6XDI7t_bCqmOT8UZcI4HiN3scZt70OV");
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity(params, new HttpHeaders());
-        String s = restTemplate.postForObject(url, requestEntity, String.class);
-        System.out.println(s);
+        Map<String, String> params= new HashMap<>();
+        params.put("corpid", "wwb74a233bc7df7597");
+        params.put("provider_secret", "t9I66qyf90SXbaUtZ_v9loNvj2-hvMZQm6XDI7t_bCqmOT8UZcI4HiN3scZt70OV");
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
+        System.out.println(jsonObject.get("provider_access_token"));
     }
 
 }
