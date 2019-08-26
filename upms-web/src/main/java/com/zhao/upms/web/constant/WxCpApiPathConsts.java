@@ -11,13 +11,6 @@ package com.zhao.upms.web.constant;
  */
 public final class WxCpApiPathConsts {
 
-  public static final String corpId = "ww70559ce8c6d3a12d";
-
-  public static final String suiteID = "wwc5d50093b12345b8";
-  public static final String secret = "DV_LfaUwOlYP-BP_hw1-J0UPq4gF19U7a9LLt9cQSKs";
-  public static final String token = "5FBgXQ2Y45f5PpgsqleZLnGaKAh2PL";
-  public static final String encodingAESKey = "HJbK12JTl0pHzbwlgM5vskDUxzlmfwtN9BVaEpW2j7c";
-
   public static final String DEFAULT_CP_BASE_URL = "https://qyapi.weixin.qq.com";
 
   public static final String GET_JSAPI_TICKET = "/cgi-bin/get_jsapi_ticket";
