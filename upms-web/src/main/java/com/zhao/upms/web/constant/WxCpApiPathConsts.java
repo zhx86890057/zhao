@@ -86,10 +86,10 @@ public final class WxCpApiPathConsts {
   public static class Tp {
     public static final String JSCODE_TO_SESSION = "/cgi-bin/service/miniprogram/jscode2session";
     public static final String GET_CORP_TOKEN = "/cgi-bin/service/get_corp_token";
-    public static final String GET_PERMANENT_CODE = "/cgi-bin/service/get_permanent_code";
+    public static final String GET_PERMANENT_CODE = "/cgi-bin/service/get_permanent_code?suite_access_token=";
     public static final String GET_SUITE_TOKEN = "/cgi-bin/service/get_suite_token";
-    public static final String GET_PRE_AUTH_CODE = "cgi-bin/service/get_pre_auth_code";
-    public static final String SET_SESSION_INFO = "/cgi-bin/service/set_session_info";
+    public static final String GET_PRE_AUTH_CODE = "/cgi-bin/service/get_pre_auth_code";
+    public static final String SET_SESSION_INFO = "/cgi-bin/service/set_session_info?suite_access_token=";
     public static final String GET_AUTH_INFO = "/cgi-bin/service/get_auth_info";
   }
 

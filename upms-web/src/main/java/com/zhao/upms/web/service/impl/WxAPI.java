@@ -2,6 +2,8 @@ package com.zhao.upms.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.Maps;
 import com.zhao.upms.common.api.CommonException;
 import com.zhao.upms.common.api.ResultCode;
 import com.zhao.upms.web.constant.WxAppConfigs;
@@ -9,6 +11,7 @@ import com.zhao.upms.web.constant.WxCpApiPathConsts;
 import com.zhao.upms.web.constant.WxCpErrorMsgEnum;
 import com.zhao.upms.web.wxBean.WxAccessToken;
 import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import static com.zhao.upms.web.constant.WxCpConsts.OAuth2Scope.SNSAPI_PRIVATEIN
 import static com.zhao.upms.web.constant.WxCpConsts.OAuth2Scope.SNSAPI_USERINFO;
 
 @Service
+@Slf4j
 public class WxAPI {
     @Autowired
     private RestTemplate restTemplate;
@@ -67,13 +71,13 @@ public class WxAPI {
      * @param preAuthCode
      */
     public void setSessionInfo(String suiteAccussToken, String preAuthCode){
-        Map<String, String> params= new HashMap<>();
-        params.put("suite_access_token", suiteAccussToken);
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.SET_SESSION_INFO) + suiteAccussToken;
+        Map<String, Object> params= new HashMap<>();
         params.put("pre_auth_code", preAuthCode);
-        params.put("session_info",null);
-        JSONObject jsonObject =
-                restTemplate.postForObject(WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.SET_SESSION_INFO),
-                        JSON.toJSONString(params), JSONObject.class);
+        Map<String, Integer> sessionMap = new HashMap<>();
+        sessionMap.put("auth_type", 1);
+        params.put("session_info", sessionMap);
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
     }
 
@@ -97,6 +101,12 @@ public class WxAPI {
         return url.toString();
     }
 
+    public static void main(String[] args) {
+        String snsapi_base = new WxAPI().build3rdAuthUrl("wwc5d50093b12345b8", "http://4hwb9r.natappfree.cc/wx/auth/test", "111", "snsapi_base");
+        System.out.println(snsapi_base);
+        String snsapi_base2 = new WxAPI().buildCorpAuthUrl("wwc5d50093b12345b8", "http://4hwb9r.natappfree.cc/wx/auth/test", "111", "snsapi_base");
+        System.out.println(snsapi_base2);
+    }
     /**
      * 构造企业oauth2链接
      * @param redirectUri
@@ -141,12 +151,12 @@ public class WxAPI {
      * @param authCode
      * @return
      */
-    public String getPermanentCode(String authCode) {
+    public String getPermanentCode(String authCode,String suiteAccussToken) {
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PERMANENT_CODE) + suiteAccussToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_code", authCode);
         JSONObject jsonObject =
-                restTemplate.postForObject(WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PERMANENT_CODE),
-                        JSON.toJSONString(params), JSONObject.class);
+                restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
         return jsonObject.getString("permanent_code");
     }
@@ -190,7 +200,10 @@ public class WxAPI {
     public void checkErrCode(JSONObject jsonObject){
         int errcode = jsonObject.getIntValue("errcode");
         if(errcode != WxCpErrorMsgEnum.CODE_0.getCode()){
-            throw new CommonException(ResultCode.FAILED.getCode(), WxCpErrorMsgEnum.findMsgByCode(errcode));
+            String msgByCode = WxCpErrorMsgEnum.findMsgByCode(errcode);
+//            log.error("企业微信返回错误码：{}，错误消息：{}", errcode, msgByCode);
+//            throw new CommonException(ResultCode.FAILED.getCode(), msgByCode);
+            throw new IllegalArgumentException(msgByCode);
         }
     }
 }

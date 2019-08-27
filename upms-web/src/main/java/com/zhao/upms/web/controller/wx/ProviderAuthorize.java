@@ -23,11 +23,11 @@
 //@Controller
 //@RequestMapping(value = "/qy/auth")
 //@Api(value = "/qy/auth")
-//public class ProviderAuthorize {
+//static class ProviderAuthorize {
 //    @Autowired
 //    private SQywxApplicationService sqywxApplicationService;
 //    //   授权页网址
-//    public static final String INSTALL_URL = "https://open.work.weixin.qq.com/3rdapp/install?suite_id=";
+//    static static final String INSTALL_URL = "https://open.work.weixin.qq.com/3rdapp/install?suite_id=";
 //
 //    /**
 //     * *   一键授权功能,主动引入用户进入授权页后，通过用户点击调用此方法
@@ -41,7 +41,7 @@
 //     */
 //    @RequestMapping(value = "/goAuthor")
 //    @ResponseBody
-//    public JsonResult goAuthor(HttpServletRequest request, String suiteId) throws IOException, AesException, DocumentException {
+//    static JsonResult goAuthor(HttpServletRequest request, String suiteId) throws IOException, AesException, DocumentException {
 //        if (StringUtils.isEmpty(suiteId)) {
 //            return new JsonResult(Message.M4003);
 //        }
@@ -69,7 +69,7 @@
 //     * *   @throws   DocumentException
 //     */
 //    @RequestMapping(value = "/authorCallback")
-//    public void authorCallback(HttpServletRequest request, HttpServletResponse response) throws IOException, AesException, DocumentException {
+//    static void authorCallback(HttpServletRequest request, HttpServletResponse response) throws IOException, AesException, DocumentException {
 //        String authCode = request.getParameter("auth_code");
 //        String expires_in = request.getParameter("expires_in");
 //        String state = request.getParameter("state");        //   //解析state

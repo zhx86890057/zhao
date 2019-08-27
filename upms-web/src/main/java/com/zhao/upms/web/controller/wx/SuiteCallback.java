@@ -1,27 +1,18 @@
 package com.zhao.upms.web.controller.wx;
 
-import com.zhao.upms.common.api.CommonException;
-import com.zhao.upms.common.api.ResultCode;
 import com.zhao.upms.web.aes.AesException;
 import com.zhao.upms.web.aes.WXBizMsgCrypt;
 import com.zhao.upms.web.constant.WxAppConfigs;
-import com.zhao.upms.web.constant.WxCpApiPathConsts;
 import com.zhao.upms.web.service.impl.WxAPI;
-import jdk.nashorn.internal.runtime.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
@@ -76,6 +67,7 @@ public class SuiteCallback {
         WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(appConfig.getToken(), appConfig.getEncodingAESKey(), appConfig.getSuiteID());
         String xml = wxcpt.DecryptMsg(signature, timestamp, nonce, requestBody);
         log.info("服务商接收到的xml解密后:{}", xml);
+        processEvent(xml, appConfig);
         return "success";
     }
 
@@ -116,10 +108,12 @@ public class SuiteCallback {
                     String suiteTicket = rootElt.elementText("SuiteTicket");
                     String timeStamp = rootElt.elementText("TimeStamp"); // 时间戳-秒
                     log.info("推送SuiteTicket,suiteTicket = {}", suiteTicket);
-                    appConfig.setSuiteID(suiteTicket);
+                    appConfig.setSuiteTicket(suiteTicket);
                     //判断suiteAccessToken是否过期
                     if(appConfig.getExpiresTime() < System.currentTimeMillis()){
-                        wxAPI.getSuiteAccessToken(appConfig);
+                        String suiteAccessToken = wxAPI.getSuiteAccessToken(appConfig);
+                        String preAuthCode = wxAPI.getPreAuthCode(suiteAccessToken);
+                        log.info("suiteAccessToken = {}, preAuthCode ={}", suiteAccessToken, preAuthCode);
                     }
                     break;
                 // 变更通知，根据ChangeType区分消息类型

@@ -12,9 +12,9 @@ public class AesException extends Exception {
     public final static int EncryptAESError = -40006;
     public final static int DecryptAESError = -40007;
     public final static int IllegalBuffer = -40008;
-    //public final static int EncodeBase64Error = -40009;
-    //public final static int DecodeBase64Error = -40010;
-    //public final static int GenReturnXmlError = -40011;
+    //static final static int EncodeBase64Error = -40009;
+    //static final static int DecodeBase64Error = -40010;
+    //static final static int GenReturnXmlError = -40011;
 
     private int code;
 

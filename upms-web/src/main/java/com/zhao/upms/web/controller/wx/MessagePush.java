@@ -28,7 +28,7 @@
 //@Controller
 //@RequestMapping(value = "/qy/message")
 //@Api(value = "/qy/message")
-//public class MessagePush extends BaseUtil {
+//static class MessagePush extends BaseUtil {
 //    private static final Logger logger = LoggerFactory.getLogger(MessagePush.class);
 //
 //    /**
@@ -42,7 +42,7 @@
 //     * @throws DocumentException
 //     */
 //    @RequestMapping(value = "{corpid}/callback")
-//    public void acceptMessageAndEvent(@PathVariable String corpid, HttpServletRequest request, HttpServletResponse response) throws IOException,
+//    static void acceptMessageAndEvent(@PathVariable String corpid, HttpServletRequest request, HttpServletResponse response) throws IOException,
 //            DocumentException, AesException {
 //        String nonce = request.getParameter("nonce");
 //        String timestamp = request.getParameter("timestamp");
@@ -86,7 +86,7 @@
 //     * @throws IOException
 //     * @throws AesException
 //     */
-//    public void checkWeixinAllNetworkCheck(HttpServletRequest request, HttpServletResponse response, String corpid, String xml)
+//    static void checkWeixinAllNetworkCheck(HttpServletRequest request, HttpServletResponse response, String corpid, String xml)
 //            throws DocumentException, IOException {
 //        Document doc = DocumentHelper.parseText(xml);
 //        Element rootElt = doc.getRootElement();
@@ -142,7 +142,7 @@
 //     * @throws DocumentException
 //     * @throws IOException
 //     */
-//    public void replyEventMessage(HttpServletRequest request, HttpServletResponse response, String event, String toUserName, String fromUserName)
+//    static void replyEventMessage(HttpServletRequest request, HttpServletResponse response, String event, String toUserName, String fromUserName)
 //            throws DocumentException, IOException {
 //        switch (event) {
 //            case "":
@@ -168,7 +168,7 @@
 //     * @throws IOException
 //     * @throws DocumentException
 //     */
-//    public void processTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName)
+//    static void processTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName)
 //            throws IOException, DocumentException {
 //        String reContent = content + "from_callback";
 //        logger.info("---全网发布接入检测------step.4-------文本回复消息  content=" + content + "   toUserName=" + toUserName + "   fromUserName=" + fromUserName);
@@ -186,7 +186,7 @@
 //     * @throws DocumentException
 //     * @throws IOException
 //     */
-//    public void replyTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName)
+//    static void replyTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName)
 //            throws DocumentException, IOException {
 //        Long createTime = Calendar.getInstance().getTimeInMillis() / 1000;
 //        StringBuffer sb = new StringBuffer();

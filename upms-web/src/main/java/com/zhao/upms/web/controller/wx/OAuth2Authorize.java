@@ -1,92 +1,53 @@
-//package com.zhao.upms.web.controller.wx;
-//
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
-//
-//import java.io.UnsupportedEncodingException;
-//import java.util.List;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import org.springframework.web.servlet.ModelAndView;
-//
-///**
-// * 用户在不告知第三方自己的帐号密码情况下，通过授权方式，让第三方服务可以获取自己的资源信息 网页授权登陆 第三方应用oauth2链接
-// *
-// */
-//@Controller
-//@RequestMapping(value = "/wx/oauth2")
-//@Api(tags = "OAuth2Authorize", description = "授权登录")
-//@Slf4j
-//public class OAuth2Authorize {
-//
-//    public static final String OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=";
-//
-//    /**
-//     * 企业微信网页授权API
-//     *
-//     * @param suiteId    第三方应用id（即ww或wx开头的suite_id）。注意与企业的网页授权登录不同
-//     * @param pageView
-//     * @param scope    应用授权作用域。
-//     * @param request
-//     * @param response
-//     * @return
-//     */
-//    @RequestMapping(value = "/getRedirectUrl")
-//    @ResponseBody
-//    public JsonResult getRedirectUrl(String suiteId, String pageView, String scope, HttpServletRequest request, HttpServletResponse response) {
-//        if (StringUtil.isEmpty(suiteId, pageView, scope)) {
-//            throw new BusinessException(Message.M4003);
-//        }
-//        EnterpriseConst suiteConst = new EnterpriseConst("suite");
-//        suiteConst.setKey(suiteId);
-//        String suiteSecret = suiteConst.getValue();
-//        if (StringUtil.isEmpty(suiteSecret)) {
-//            throw new BusinessException(Message.M4004);
-//        }        // 第一步：引导用户进入授权页面,根据应用授权作用域，获取code
-//        String basePath = request.getScheme() + "://" + request.getServerName();
-//        String backUrl = basePath + "/third/qy/oauth2/redirect/" + suiteId;
-//        logger.info("------------------------回调地址:----" + backUrl);        // 微信授权地址
-//        String redirectUrl = oAuth2Url(suiteId, backUrl, scope, pageView);
-//        logger.info("------------------------授权地址:----" + redirectUrl);
-//        return new JsonResult(true, redirectUrl);
-//    }
-//
-//    /**
-//     * 构造带员工身份信息的URL
-//     *
-//     * @param appid        第三方应用id（即ww或wx开头的suite_id）
-//     * @param redirect_uri 授权后重定向的回调链接地址，请使用urlencode对链接进行处理
-//     * @param state        重定向后会带上state參数，企业能够填写a-zA-Z0-9的參数值
-//     * @return
-//     */
-//    private String oAuth2Url(String suiteId, String redirect_uri, String scope, String state) {
-//        try {
-//            redirect_uri = java.net.URLEncoder.encode(redirect_uri, "utf-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        String oauth2Url = OAUTH2_URL + suiteId + "&redirect_uri=" + redirect_uri + "&response_type=code" + "&scope=" + scope + "&state=" + state
-//                + "#wechat_redirect";
-//        System.out.println("oauth2Url=" + oauth2Url);
-//        return oauth2Url;
-//    }
-//
-//    /**
-//     * 微信回调地址
-//     *
-//     * @param request
-//     * @return
-//     */
+package com.zhao.upms.web.controller.wx;
+
+import com.zhao.upms.web.service.impl.WxAPI;
+import com.zhao.upms.web.wxBean.WxAccessToken;
+import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+/**
+ * 用户在不告知第三方自己的帐号密码情况下，通过授权方式，让第三方服务可以获取自己的资源信息 网页授权登陆 第三方应用oauth2链接
+ *
+ */
+@RestController
+@RequestMapping(value = "/wx/auth")
+@Api(tags = "OAuth2Authorize", description = "授权登录")
+@Slf4j
+public class OAuth2Authorize {
+
+    @Autowired
+    private WxAPI wxAPI;
+
+    @GetMapping("/test")
+    public String test(@RequestParam(name = "auth_code") String code, HttpServletRequest request){
+        System.out.println(code);
+        String permanentCode = wxAPI.getPermanentCode(code, "knCO9XdC1rpmJy8-0zwExbitdRDQVaBSG5m12ZPGK14xDbWiFwBqDiId3fysOCscAnRaiDGO2i_tNeRqwxkd0AnN8Q4Ct3omrlq8xcl5K1BGg-HSegCSQkxnzZnLSbKg");
+        WxAuthCorpInfo wxAPIAuthInfo = wxAPI.getAuthInfo("ww70559ce8c6d3a12d", permanentCode);
+        WxAccessToken wxAccessToken = wxAPI.getCorpToken("ww70559ce8c6d3a12d", permanentCode);
+        return code;
+    }
+
+    /**
+     * 微信回调地址
+     *
+     * @param request
+     * @return
+     */
 //    @RequestMapping(value = "/redirect/{suiteId}")
 //    @ApiOperation(value = "微信回调地址", httpMethod = "GET", hidden = true, notes = "微信回调地址")
-//    public ModelAndView redirectDetail(@PathVariable String suiteId, HttpServletRequest request, HttpServletResponse response) {
+//    static ModelAndView redirectDetail(@PathVariable String suiteId, HttpServletRequest request, HttpServletResponse response) {
 //
 //        response.setHeader("Access-Control-Allow-Origin", "*");
 //        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -205,15 +166,15 @@
 //            return mv;
 //        }
 //    }
-//
-//    /**
-//     * 企业微信后台回调地址
-//     *
-//     * @param request
-//     * @return
-//     */
+
+    /**
+     * 企业微信后台回调地址
+     *
+     * @param request
+     * @return
+     */
 //    @RequestMapping(value = "/admin/redirect")
-//    public ModelAndView adminRedirectDetail(String auth_code, HttpServletRequest request, HttpServletResponse response) {
+//    static ModelAndView adminRedirectDetail(String auth_code, HttpServletRequest request, HttpServletResponse response) {
 //        response.setHeader("Access-Control-Allow-Origin", "*");
 //        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 //        response.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -238,4 +199,4 @@
 //            return mv;
 //        }
 //    }
-//}
+}

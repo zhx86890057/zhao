@@ -20,7 +20,7 @@
 //@Controller
 //@RequestMapping(value = "/qy/jssdk")
 //@Api(value = "/qy/jssdk")
-//public class JSSDK {
+//static class JSSDK {
 //    private static final Logger logger = LoggerFactory.getLogger(JSSDK.class);
 //    @Autowired
 //    private SQywxApplicationService sqywxApplicationService;
@@ -34,7 +34,7 @@
 //    @RequestMapping(value = "/config/{suiteId}/{authCorpId}")
 //    @ResponseBody
 //    @ApiOperation(value = "公众号回调地址", httpMethod = "GET", hidden = true)
-//    public JsonResult jssdkconfig(@PathVariable String suiteId, @PathVariable String authCorpId, String requestUrl, HttpServletResponse response) {
+//    static JsonResult jssdkconfig(@PathVariable String suiteId, @PathVariable String authCorpId, String requestUrl, HttpServletResponse response) {
 //        if (StringUtils.isEmpty(suiteId, authCorpId, requestUrl)) {
 //            return new JsonResult(Message.M4003);
 //        }        //  根据suiteId查询第三方信息
