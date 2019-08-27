@@ -2,6 +2,7 @@ package com.zhao.upms.web.constant;
 
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,8 @@ public class WxAppConfigs {
 
     @PostConstruct
     public void init() {
-        configMap.put(suiteID, new AppConfig(suiteID, secret, token, encodingAESKey));
+        configMap.put(suiteID,
+                AppConfig.builder().suiteID(suiteID).secret(secret).token(token).encodingAESKey(encodingAESKey).build());
     }
 
     public static AppConfig getAppConfig(String suiteID){
@@ -30,6 +32,7 @@ public class WxAppConfigs {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
+    @Builder
     public static class AppConfig {
         /**
          * 设置微信企业应用的suiteID
@@ -51,5 +54,16 @@ public class WxAppConfigs {
          */
         private String encodingAESKey;
 
+        //安全凭证
+        private String suiteTicket;
+        //第三方应用凭证
+        private volatile String suiteAccessToken;
+        //第三方应用凭证过期时间
+        private volatile long expiresTime;
+
+        public void updateSuiteAccessToken(String suiteAccessToken, int expiresInSeconds) {
+            this.suiteAccessToken = suiteAccessToken;
+            this.expiresTime = System.currentTimeMillis() + (expiresInSeconds - 200) * 1000L;
+        }
     }
 }

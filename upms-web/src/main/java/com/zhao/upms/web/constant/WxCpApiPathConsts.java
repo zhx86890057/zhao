@@ -7,7 +7,6 @@ package com.zhao.upms.web.constant;
  *  Created by BinaryWang on 2019-06-02.
  * </pre>
  *
- * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
 public final class WxCpApiPathConsts {
 
@@ -33,6 +32,7 @@ public final class WxCpApiPathConsts {
     public static final String GET_USER_INFO = "/cgi-bin/user/getuserinfo?code=%s&agentid=%d";
     public static final String GET_USER_DETAIL = "/cgi-bin/user/getuserdetail";
     public static final String URL_OAUTH2_AUTHORIZE = "https://open.weixin.qq.com/connect/oauth2/authorize";
+    public static final String QRCONNECT_URL = "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
   }
 
   public static class Chat {
@@ -88,6 +88,9 @@ public final class WxCpApiPathConsts {
     public static final String GET_CORP_TOKEN = "/cgi-bin/service/get_corp_token";
     public static final String GET_PERMANENT_CODE = "/cgi-bin/service/get_permanent_code";
     public static final String GET_SUITE_TOKEN = "/cgi-bin/service/get_suite_token";
+    public static final String GET_PRE_AUTH_CODE = "cgi-bin/service/get_pre_auth_code";
+    public static final String SET_SESSION_INFO = "/cgi-bin/service/set_session_info";
+    public static final String GET_AUTH_INFO = "/cgi-bin/service/get_auth_info";
   }
 
   public static class User {
@@ -110,5 +113,9 @@ public final class WxCpApiPathConsts {
     public static final String GET_EXTERNAL_CONTACT = "/cgi-bin/crm/get_external_contact?external_userid=";
     public static final String LIST_EXTERNAL_CONTACT = "/cgi-bin/externalcontact/list?userid=";
     public static final String GET_FOLLOW_USER_LIST = "/cgi-bin/externalcontact/get_follow_user_list";
+  }
+
+  public static String getURL(String path){
+    return DEFAULT_CP_BASE_URL + path;
   }
 }

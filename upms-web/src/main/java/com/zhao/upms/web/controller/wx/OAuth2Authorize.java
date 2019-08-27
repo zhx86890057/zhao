@@ -8,9 +8,7 @@
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
 //
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
+//import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Controller;
 //import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +18,19 @@
 ///**
 // * 用户在不告知第三方自己的帐号密码情况下，通过授权方式，让第三方服务可以获取自己的资源信息 网页授权登陆 第三方应用oauth2链接
 // *
-// * @author wison
 // */
 //@Controller
-//@RequestMapping(value = "/qy/oauth2")
-//@Api(value = "/qy/oauth2")
+//@RequestMapping(value = "/wx/oauth2")
+//@Api(tags = "OAuth2Authorize", description = "授权登录")
+//@Slf4j
 //public class OAuth2Authorize {
-//    private static final Logger logger = LoggerFactory.getLogger(OAuth2Authorize.class);
-//    @Autowired
-//    private SQywxApplicationService sqywxApplicationService;
-//    @Autowired
-//    private SQywxApplicationAuthorizerService sqywxApplicationAuthorizerService;    // oauth2地址
+//
 //    public static final String OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=";
 //
 //    /**
 //     * 企业微信网页授权API
 //     *
-//     * @param appId    第三方应用id（即ww或wx开头的suite_id）。注意与企业的网页授权登录不同
+//     * @param suiteId    第三方应用id（即ww或wx开头的suite_id）。注意与企业的网页授权登录不同
 //     * @param pageView
 //     * @param scope    应用授权作用域。
 //     * @param request
