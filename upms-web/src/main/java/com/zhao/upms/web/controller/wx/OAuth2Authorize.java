@@ -30,14 +30,28 @@ public class OAuth2Authorize {
     @Autowired
     private WxAPI wxAPI;
 
-    @GetMapping("/test")
-    public String test(@RequestParam(name = "auth_code") String code, HttpServletRequest request){
-        System.out.println(code);
-        String permanentCode = wxAPI.getPermanentCode(code, "knCO9XdC1rpmJy8-0zwExbitdRDQVaBSG5m12ZPGK14xDbWiFwBqDiId3fysOCscAnRaiDGO2i_tNeRqwxkd0AnN8Q4Ct3omrlq8xcl5K1BGg-HSegCSQkxnzZnLSbKg");
-        WxAuthCorpInfo wxAPIAuthInfo = wxAPI.getAuthInfo("ww70559ce8c6d3a12d", permanentCode);
-        WxAccessToken wxAccessToken = wxAPI.getCorpToken("ww70559ce8c6d3a12d", permanentCode);
-        return code;
+    /**
+     * 三方应用oauth2链接回调
+     * @param code
+     * @return
+     */
+    @GetMapping("/callback3rd")
+    public String callback3rd(@RequestParam(name = "code") String code){
+        String suiteAccussToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
+        return wxAPI.getUserInfo3rd(suiteAccussToken, code);
     }
+
+    /**
+     * 企业oauth2链接回调
+     * @param code
+     * @return
+     */
+    @GetMapping("/callbackCorp")
+    public String callbackCorp(@RequestParam(name = "code") String code){
+        String suiteAccussToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
+        return wxAPI.getUserInfo3rd(suiteAccussToken, code);
+    }
+
 
     /**
      * 微信回调地址

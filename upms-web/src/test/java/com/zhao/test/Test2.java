@@ -3,6 +3,9 @@ package com.zhao.test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhao.upms.web.UpmsApplication;
+import com.zhao.upms.web.service.impl.WxAPI;
+import com.zhao.upms.web.wxBean.WxAccessToken;
+import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +55,18 @@ public class Test2 {
         params.put("provider_secret", "t9I66qyf90SXbaUtZ_v9loNvj2-hvMZQm6XDI7t_bCqmOT8UZcI4HiN3scZt70OV");
         JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         System.out.println(jsonObject.get("provider_access_token"));
+    }
+
+    @Autowired
+    private WxAPI wxAPI;
+
+    @Test
+    public void test2(){
+        String permanentCode = "sf66hs80-LElRHGyavvkmGj24RgFPLhhVW7KV-7denE";
+        WxAuthCorpInfo wxAPIAuthInfo = wxAPI.getAuthInfo("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
+        WxAccessToken wxAccessToken = wxAPI.getCorpToken("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
+        System.out.println(wxAPIAuthInfo);
+        System.out.println(wxAccessToken);
     }
 
 }

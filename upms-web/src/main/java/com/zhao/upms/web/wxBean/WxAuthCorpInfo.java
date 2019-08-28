@@ -2,7 +2,6 @@ package com.zhao.upms.web.wxBean;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Data;
 import java.util.Date;
 
@@ -38,7 +37,7 @@ public class WxAuthCorpInfo{
 
   @JSONField(name ="subject_type")
   @ApiModelProperty("企业类型，1. 企业; 2. 政府以及事业单位; 3. 其他组织, 4.团队号")
-  private String subjectType;
+  private Integer subjectType;
 
   @JSONField(name ="verified_end_time")
   @ApiModelProperty("认证到期时间")

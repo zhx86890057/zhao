@@ -32,7 +32,13 @@ public final class WxCpApiPathConsts {
     public static final String GET_USER_INFO = "/cgi-bin/user/getuserinfo?code=%s&agentid=%d";
     public static final String GET_USER_DETAIL = "/cgi-bin/user/getuserdetail";
     public static final String URL_OAUTH2_AUTHORIZE = "https://open.weixin.qq.com/connect/oauth2/authorize";
-    public static final String QRCONNECT_URL = "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
+    public static final String QRCONNECT_URL = "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s" +
+            "&response_type=code&scope=%s&state=%s#wechat_redirect";
+    public static final String INSTALL = "https://open.work.weixin.qq" +
+            ".com/3rdapp/install?suite_id=%s&pre_auth_code=%s&redirect_uri=%s&state=%s";
+    public static final String GET_USER_INFO_3RD = "/cgi-bin/service/getuserinfo3rd?access_token=%s&code=%s";
+    public static final String GET_USER_DETAIL_3RD = "/cgi-bin/service/getuserdetail3rd?access_token=";
+
   }
 
   public static class Chat {
@@ -85,12 +91,13 @@ public final class WxCpApiPathConsts {
 
   public static class Tp {
     public static final String JSCODE_TO_SESSION = "/cgi-bin/service/miniprogram/jscode2session";
-    public static final String GET_CORP_TOKEN = "/cgi-bin/service/get_corp_token";
+    public static final String GET_CORP_TOKEN = "/cgi-bin/service/get_corp_token?suite_access_token=";
     public static final String GET_PERMANENT_CODE = "/cgi-bin/service/get_permanent_code?suite_access_token=";
     public static final String GET_SUITE_TOKEN = "/cgi-bin/service/get_suite_token";
     public static final String GET_PRE_AUTH_CODE = "/cgi-bin/service/get_pre_auth_code";
     public static final String SET_SESSION_INFO = "/cgi-bin/service/set_session_info?suite_access_token=";
-    public static final String GET_AUTH_INFO = "/cgi-bin/service/get_auth_info";
+    public static final String GET_AUTH_INFO = "/cgi-bin/service/get_auth_info?suite_access_token=";
+    public static final String GET_ADMIN_LIST = "/cgi-bin/service/get_admin_list?suite_access_token=";
   }
 
   public static class User {

@@ -7,7 +7,7 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -19,11 +19,11 @@
   </delete>
   <insert id="insert" parameterType="com.zhao.dao.domain.SysUser" >
     insert into sys_user (id, username, password, 
-      email, phone, nick_name, 
+      email, phone, name,
       last_login_time, status, create_time, 
       modify_time)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
@@ -33,7 +33,7 @@
       password = #{password,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -41,18 +41,18 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, username, password, email, phone, nick_name, last_login_time, status, 
+    select id, username, password, email, phone, name, last_login_time, status,
     create_time, modify_time
     from sys_user
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, username, password, email, phone, nick_name, last_login_time, status, 
+    select id, username, password, email, phone, name, last_login_time, status,
     create_time, modify_time
     from sys_user
   </select>
   <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select id, username, password, email, phone, nick_name, last_login_time, status,
+    select id, username, password, email, phone, name, last_login_time, status,
     create_time, modify_time
     from sys_user
     where username = #{username}

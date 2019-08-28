@@ -1,82 +1,65 @@
-//package com.zhao.upms.web.controller.wx;
-//
-//import com.zteng.invest.server.aes.AesException;
-//import io.swagger.annotations.Api;
-//
-//import java.io.IOException;
-//import java.net.URLEncoder;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//
-//import org.apache.commons.lang3.StringUtils;
-//import org.dom4j.DocumentException;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//
-///**
-// * *   企业授权应用   方式一：从服务商网站发起
-// * *
-// * *   @author   wison
-// */
-//@Controller
-//@RequestMapping(value = "/qy/auth")
-//@Api(value = "/qy/auth")
-//static class ProviderAuthorize {
-//    @Autowired
-//    private SQywxApplicationService sqywxApplicationService;
-//    //   授权页网址
-//    static static final String INSTALL_URL = "https://open.work.weixin.qq.com/3rdapp/install?suite_id=";
-//
-//    /**
-//     * *   一键授权功能,主动引入用户进入授权页后，通过用户点击调用此方法
-//     * *
-//     * *   @param   request
-//     * *   @param   suiteId
-//     * *            应用id
-//     * *   @throws   IOException
-//     * *   @throws   AesException
-//     * *   @throws   DocumentException
-//     */
-//    @RequestMapping(value = "/goAuthor")
-//    @ResponseBody
-//    static JsonResult goAuthor(HttpServletRequest request, String suiteId) throws IOException, AesException, DocumentException {
-//        if (StringUtils.isEmpty(suiteId)) {
-//            return new JsonResult(Message.M4003);
-//        }
-//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-//        String redirectUri = baseUrl + "/qy/auth/authorCallback";
-//        String redirectUriEncode = URLEncoder.encode(redirectUri, "UTF-8");        //   Map<String,String>   stateMap   =   new   HashMap<String,   String>();
-//        //   stateMap.put("suiteId",   suiteId);
-//        //   查询第三方应用，获取预授权码
-//        SQywxApplication application = sqywxApplicationService.queryBySuiteId(suiteId);
-//        if (application == null || StringUtil.isEmpty(application.getPreAuthCode())) {
-//            return new JsonResult(Message.M3001, "suiteId:" + suiteId + "对应的第三方应用尚未初始化，请等待10分钟或联系服务商", null);
-//        }        //   获取预授权码，有效期10分钟
-//        String preAuthCode = application.getPreAuthCode();
-//        String url = INSTALL_URL + suiteId + "&pre_auth_code=" + preAuthCode + "&redirect_uri=" + redirectUriEncode + "&state=" + suiteId;
-//        return new JsonResult(Message.M2000, url);
-//    }
-//
-//    /**
-//     * *   引导授权回调   根据临时授权码（10分钟有效），换取永久授权码
-//     * *
-//     * *   @param   request
-//     * *   @param   response
-//     * *   @throws   IOException
-//     * *   @throws   AesException
-//     * *   @throws   DocumentException
-//     */
-//    @RequestMapping(value = "/authorCallback")
-//    static void authorCallback(HttpServletRequest request, HttpServletResponse response) throws IOException, AesException, DocumentException {
-//        String authCode = request.getParameter("auth_code");
-//        String expires_in = request.getParameter("expires_in");
-//        String state = request.getParameter("state");        //   //解析state
-//        //   JSONObject   js   =   JSONObject.parseObject(state);
-//        //   String   suiteId   =   js.getString("suiteId");
-//        String suiteId = state;        //   换取永久授权码
-//        EnterpriseAPI.getPermanentCodeAndAccessToken(suiteId, authCode);
-//    }
-//
-//}
+package com.zhao.upms.web.controller.wx;
+
+import com.zhao.upms.common.api.CommonResult;
+import com.zhao.upms.web.constant.WxAppConfigs;
+import com.zhao.upms.web.service.impl.WxAPI;
+import com.zhao.upms.web.wxBean.WxAccessToken;
+import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * *   企业授权应用   方式一：从服务商网站发起
+ * *
+ * *   @author   wison
+ */
+@RestController
+@RequestMapping(value = "/wx/install")
+@Slf4j
+public class ProviderAuthorize {
+    @Autowired
+    private WxAPI wxAPI;
+
+    /**
+     * *   第三方服务商在自己的网站中放置“企业微信应用授权”的入口，引导企业微信管理员进入应用授权页
+     * *   @param   suiteId 应用id
+     */
+    @RequestMapping(value = "/buildUrl")
+    public CommonResult buildUrl(@RequestParam String suiteId) {
+        WxAppConfigs.AppConfig appConfig = WxAppConfigs.getAppConfig(suiteId);
+        if (appConfig == null) {
+            log.error("未找到对应suiteId={}的配置，请核实！", suiteId);
+            return CommonResult.failed(String.format("未找到对应suiteId=[%d]的配置，请核实！", suiteId));
+        }
+        String baseUrl = "http://2panth.natappfree.cc";
+        String redirectUri = baseUrl + "/wx/install/installCallback?suiteId=" + suiteId;
+        //查询第三方应用，获取预授权码
+        String preAuthCode = wxAPI.getPreAuthCode(appConfig.getSuiteAccessToken());
+        wxAPI.setSessionInfo(appConfig.getSuiteAccessToken(), preAuthCode, 1);
+        String url = wxAPI.installURL(suiteId, preAuthCode, redirectUri, null);
+        return CommonResult.success(url);
+
+    }
+
+    /**
+     * *   引导授权回调   根据临时授权码（10分钟有效），换取永久授权码
+     * *
+     */
+    @RequestMapping(value = "/installCallback")
+    public String installCallback(@RequestParam("auth_code")String authCode,
+                                @RequestParam("expires_in")Integer expiresIn,
+                                @RequestParam(value = "state", required = false)String state,
+                                @RequestParam String suiteId) {
+        WxAppConfigs.AppConfig appConfig = WxAppConfigs.getAppConfig(suiteId);
+        if (appConfig == null) {
+            log.info("未找到对应suiteId={}的配置，请核实！", suiteId);
+            return String.format("未找到对应suiteId=[%d]的配置，请核实！", suiteId);
+        }
+        String permanentCode = wxAPI.getPermanentCode(authCode, appConfig.getSuiteAccessToken());
+        return permanentCode;
+    }
+
+}

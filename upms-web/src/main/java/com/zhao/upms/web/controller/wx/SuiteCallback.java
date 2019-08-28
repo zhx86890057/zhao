@@ -42,7 +42,8 @@ public class SuiteCallback {
         WxAppConfigs.AppConfig appConfig = WxAppConfigs.getAppConfig(suiteId);
         WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(appConfig.getToken(), appConfig.getEncodingAESKey(), WxAppConfigs.corpId);
         if (appConfig == null) {
-            return String.format("未找到对应agentId=[%d]的配置，请核实！", suiteId);
+            log.info("未找到对应suiteId={}的配置，请核实！", suiteId);
+            return String.format("未找到对应suiteId=[%d]的配置，请核实！", suiteId);
         }
         String sEchoStr = wxcpt.VerifyURL(signature, timestamp, nonce, echostr);
         log.info("URL验证成功，返回解析后的的echostr:{}", sEchoStr);

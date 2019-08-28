@@ -1,6 +1,7 @@
 package com.zhao.upms.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Maps;
@@ -17,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.print.DocFlavor;
+import javax.sound.midi.Soundbank;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zhao.upms.web.constant.WxCpApiPathConsts.OAuth2.QRCONNECT_URL;
-import static com.zhao.upms.web.constant.WxCpApiPathConsts.OAuth2.URL_OAUTH2_AUTHORIZE;
+import static com.zhao.upms.web.constant.WxCpApiPathConsts.OAuth2.*;
 import static com.zhao.upms.web.constant.WxCpConsts.OAuth2Scope.SNSAPI_PRIVATEINFO;
 import static com.zhao.upms.web.constant.WxCpConsts.OAuth2Scope.SNSAPI_USERINFO;
 
@@ -60,6 +63,7 @@ public class WxAPI {
     public String getPreAuthCode(String suiteAccussToken){
         String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PRE_AUTH_CODE) + "?suite_access_token={1}";
         JSONObject jsonObject = restTemplate.getForObject(url, JSONObject.class, suiteAccussToken);
+        System.out.println(jsonObject);
         checkErrCode(jsonObject);
         String preAuthCode = jsonObject.getString("pre_auth_code");
         return preAuthCode;
@@ -70,12 +74,12 @@ public class WxAPI {
      * @param suiteAccussToken
      * @param preAuthCode
      */
-    public void setSessionInfo(String suiteAccussToken, String preAuthCode){
+    public void setSessionInfo(String suiteAccussToken, String preAuthCode, int authType){
         String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.SET_SESSION_INFO) + suiteAccussToken;
         Map<String, Object> params= new HashMap<>();
         params.put("pre_auth_code", preAuthCode);
         Map<String, Integer> sessionMap = new HashMap<>();
-        sessionMap.put("auth_type", 1);
+        sessionMap.put("auth_type", authType);
         params.put("session_info", sessionMap);
         JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
@@ -102,9 +106,9 @@ public class WxAPI {
     }
 
     public static void main(String[] args) {
-        String snsapi_base = new WxAPI().build3rdAuthUrl("wwc5d50093b12345b8", "http://4hwb9r.natappfree.cc/wx/auth/test", "111", "snsapi_base");
+        String snsapi_base = new WxAPI().build3rdAuthUrl("wwc5d50093b12345b8", "http://2panth.natappfree.cc/wx/auth/test", "111", "snsapi_base");
         System.out.println(snsapi_base);
-        String snsapi_base2 = new WxAPI().buildCorpAuthUrl("wwc5d50093b12345b8", "http://4hwb9r.natappfree.cc/wx/auth/test", "111", "snsapi_base");
+        String snsapi_base2 = new WxAPI().buildCorpAuthUrl("wwc5d50093b12345b8", "http://2panth.natappfree.cc/wx/auth/callbackCorp", "111", "snsapi_base");
         System.out.println(snsapi_base2);
     }
     /**
@@ -147,6 +151,17 @@ public class WxAPI {
     }
 
     /**
+     * 企业微信应用授权”的入口，引导企业微信管理员进入应用授权页
+     * @param suitId
+     * @param preAuthCode
+     * @param redirectURI
+     * @param state
+     */
+    public String installURL(String suitId, String preAuthCode, String redirectURI, String state) {
+        return String.format(INSTALL, suitId, preAuthCode, URLEncoder.encode(redirectURI), state);
+    }
+
+    /**
      * 使用临时授权码换取授权方的永久授权码
      * @param authCode
      * @return
@@ -157,6 +172,7 @@ public class WxAPI {
         params.put("auth_code", authCode);
         JSONObject jsonObject =
                 restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
+        System.out.println(jsonObject);
         checkErrCode(jsonObject);
         return jsonObject.getString("permanent_code");
     }
@@ -166,13 +182,12 @@ public class WxAPI {
      * @param authCorpid
      * @param permanentCode
      */
-    public WxAuthCorpInfo getAuthInfo(String authCorpid, String permanentCode){
+    public WxAuthCorpInfo getAuthInfo(String suiteAccussToken, String authCorpid, String permanentCode){
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_AUTH_INFO) + suiteAccussToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_corpid", authCorpid);
         params.put("permanent_code", permanentCode);
-        JSONObject jsonObject =
-                restTemplate.postForObject(WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_AUTH_INFO),
-                        JSON.toJSONString(params), JSONObject.class);
+        JSONObject jsonObject = restTemplate.postForObject(url,JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
         WxAuthCorpInfo wxAuthCorpInfo = jsonObject.getObject("auth_corp_info", WxAuthCorpInfo.class);
         return wxAuthCorpInfo;
@@ -184,17 +199,63 @@ public class WxAPI {
      * @param permanentCode
      * @return
      */
-    public WxAccessToken getCorpToken(String authCorpid, String permanentCode){
+    public WxAccessToken getCorpToken(String suiteAccussToken, String authCorpid, String permanentCode){
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_CORP_TOKEN) + suiteAccussToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_corpid", authCorpid);
         params.put("permanent_code", permanentCode);
-        JSONObject jsonObject =
-                restTemplate.postForObject(WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_CORP_TOKEN),
-                        JSON.toJSONString(params), JSONObject.class);
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
         String accessToken = jsonObject.getString("access_token");
         int expiresIn = jsonObject.getIntValue("expires_in");
         return new WxAccessToken(accessToken, expiresIn);
+    }
+
+    /**
+     * 获取应用的管理员列表
+     * @param suiteAccussToken
+     * @param corpid
+     * @param agentid
+     * @return
+     */
+    public String getAdminList(String suiteAccussToken, String corpid, Integer agentid ) {
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_ADMIN_LIST) + suiteAccussToken;
+        Map<String, Object> params= new HashMap<>();
+        params.put("auth_corpid", corpid);
+        params.put("agentid", agentid);
+        JSONObject jsonObject =
+                restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
+        checkErrCode(jsonObject);
+        JSONArray admin = jsonObject.getJSONArray("admin");
+        //todo 后续处理
+        return null;
+    }
+
+    /**
+     * 获取访问用户身份
+     * @param suiteAccussToken
+     * @param code 通过成员授权获取到的code
+     * @return
+     */
+    public String getUserInfo3rd(String suiteAccussToken, String code) {
+        String url = String.format(WxCpApiPathConsts.getURL(GET_USER_INFO_3RD),suiteAccussToken, code);
+        Map<String, Object> params= new HashMap<>();
+        params.put("access_token", suiteAccussToken);
+        params.put("code", code);
+        JSONObject jsonObject = restTemplate.getForObject(url, JSONObject.class);
+        checkErrCode(jsonObject);
+        //todo 用户处理
+        return jsonObject.getString("CorpId");
+    }
+
+    public String getUserDetail3rd(String suiteAccussToken, String userTicket) {
+        String url = WxCpApiPathConsts.getURL(GET_USER_DETAIL_3RD) + suiteAccussToken;
+        Map<String, Object> params= new HashMap<>();
+        params.put("user_ticket", userTicket);
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
+        checkErrCode(jsonObject);
+        //todo 用户处理
+        return null;
     }
 
     public void checkErrCode(JSONObject jsonObject){
