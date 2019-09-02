@@ -13,7 +13,7 @@ import java.util.Date;
 public class WxAuthCorpInfo{
   @JSONField(name = "corpid")
   @ApiModelProperty("授权方企业微信id")
-  private String corpId;
+  private String corpid;
 
   @JSONField(name ="corp_name")
   @ApiModelProperty("授权方企业名称")
@@ -66,9 +66,5 @@ public class WxAuthCorpInfo{
   @JSONField(name ="permanent_code")
   @ApiModelProperty("永久授权码")
   private String permanentCode;
-
-  @JSONField(name ="errcode")
-  @ApiModelProperty("错误码")
-  private Integer errcode;
 
 }

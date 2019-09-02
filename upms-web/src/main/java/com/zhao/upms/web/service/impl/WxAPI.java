@@ -3,24 +3,22 @@ package com.zhao.upms.web.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.common.collect.Maps;
-import com.zhao.upms.common.api.CommonException;
-import com.zhao.upms.common.api.ResultCode;
+import com.zhao.dao.domain.SysUserRole;
+import com.zhao.dao.domain.UmsMember;
+import com.zhao.dao.domain.WxCorp;
+import com.zhao.dao.mapper.SysUserRoleMapper;
+import com.zhao.dao.mapper.UmsMemberMapper;
+import com.zhao.dao.mapper.WxCorpMapper;
 import com.zhao.upms.web.constant.WxAppConfigs;
 import com.zhao.upms.web.constant.WxCpApiPathConsts;
 import com.zhao.upms.web.constant.WxCpErrorMsgEnum;
 import com.zhao.upms.web.wxBean.WxAccessToken;
-import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import javax.print.DocFlavor;
-import javax.sound.midi.Soundbank;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +32,12 @@ import static com.zhao.upms.web.constant.WxCpConsts.OAuth2Scope.SNSAPI_USERINFO;
 public class WxAPI {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private WxCorpMapper wxCorpMapper;
+    @Autowired
+    private UmsMemberMapper umsMemberMapper;
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
     /**
      * 获取第三方应用凭证
@@ -137,7 +141,6 @@ public class WxAPI {
     /**
      * <pre>
      * 构造第三方使用网站应用授权登录的url.
-     * 详情请见: <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN">网站应用微信登录开发指南</a>
      * URL格式为：https://open.weixin.qq.com/connect/qrconnect?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
      * </pre>
      *
@@ -166,15 +169,31 @@ public class WxAPI {
      * @param authCode
      * @return
      */
+    @Transactional
     public String getPermanentCode(String authCode,String suiteAccussToken) {
         String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PERMANENT_CODE) + suiteAccussToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_code", authCode);
-        JSONObject jsonObject =
-                restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
-        System.out.println(jsonObject);
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
-        return jsonObject.getString("permanent_code");
+        String permanentCode = jsonObject.getString("permanent_code");
+        WxCorp wxCorp = jsonObject.getObject("auht_corp_info", WxCorp.class);
+        wxCorp.setPermanentCode(permanentCode);
+        int insert = wxCorpMapper.insert(wxCorp);
+        if(insert == 0){
+            log.error("插入企业信息失败：{}", JSON.toJSONString(wxCorp));
+        }
+        UmsMember member = jsonObject.getObject("auth_user_info", UmsMember.class);
+        int insert2 = umsMemberMapper.insert(member);
+        if(insert2 == 0){
+            log.error("插入授权管理员失败：{}", JSON.toJSONString(member));
+        }
+        SysUserRole userRole = SysUserRole.builder().roleId("admin").userId(member.getId()).build();
+        int insert3 = sysUserRoleMapper.insert(userRole);
+        if(insert3 == 0){
+            log.error("插入管理员角色失败：{}", JSON.toJSONString(member));
+        }
+        return permanentCode;
     }
 
     /**
@@ -182,15 +201,15 @@ public class WxAPI {
      * @param authCorpid
      * @param permanentCode
      */
-    public WxAuthCorpInfo getAuthInfo(String suiteAccussToken, String authCorpid, String permanentCode){
+    public WxCorp getAuthInfo(String suiteAccussToken, String authCorpid, String permanentCode){
         String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_AUTH_INFO) + suiteAccussToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_corpid", authCorpid);
         params.put("permanent_code", permanentCode);
         JSONObject jsonObject = restTemplate.postForObject(url,JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
-        WxAuthCorpInfo wxAuthCorpInfo = jsonObject.getObject("auth_corp_info", WxAuthCorpInfo.class);
-        return wxAuthCorpInfo;
+        WxCorp wxCorp = jsonObject.getObject("auth_corp_info", WxCorp.class);
+        return wxCorp;
     }
 
     /**
@@ -223,8 +242,7 @@ public class WxAPI {
         Map<String, Object> params= new HashMap<>();
         params.put("auth_corpid", corpid);
         params.put("agentid", agentid);
-        JSONObject jsonObject =
-                restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
+        JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
         JSONArray admin = jsonObject.getJSONArray("admin");
         //todo 后续处理

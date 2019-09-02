@@ -49,9 +49,9 @@ public final class WxCpApiPathConsts {
   }
 
   public static class Department {
-    public static final String DEPARTMENT_CREATE = "/cgi-bin/department/create";
-    public static final String DEPARTMENT_UPDATE = "/cgi-bin/department/update";
-    public static final String DEPARTMENT_DELETE = "/cgi-bin/department/delete?id=%d";
+    public static final String DEPARTMENT_CREATE = "/cgi-bin/department/create?access_token=";
+    public static final String DEPARTMENT_UPDATE = "/cgi-bin/department/update?access_token=";
+    public static final String DEPARTMENT_DELETE = "/cgi-bin/department/delete?access_token=%s&id=%d";
     public static final String DEPARTMENT_LIST = "/cgi-bin/department/list";
   }
 
@@ -102,11 +102,11 @@ public final class WxCpApiPathConsts {
 
   public static class User {
     public static final String USER_AUTHENTICATE = "/cgi-bin/user/authsucc?userid=";
-    public static final String USER_CREATE = "/cgi-bin/user/create";
-    public static final String USER_UPDATE = "/cgi-bin/user/update";
-    public static final String USER_DELETE = "/cgi-bin/user/delete?userid=";
+    public static final String USER_CREATE = "/cgi-bin/user/create?access_token=";
+    public static final String USER_UPDATE = "/cgi-bin/user/update?access_token=";
+    public static final String USER_DELETE = "/cgi-bin/user/delete?access_token=%s&userid=%s";
     public static final String USER_BATCH_DELETE = "/cgi-bin/user/batchdelete";
-    public static final String USER_GET = "/cgi-bin/user/get?userid=";
+    public static final String USER_GET = "/cgi-bin/user/get?access_token=%s&userid=%s";
     public static final String USER_LIST = "/cgi-bin/user/list?department_id=";
     public static final String USER_SIMPLE_LIST = "/cgi-bin/user/simplelist?department_id=";
     public static final String BATCH_INVITE = "/cgi-bin/batch/invite";

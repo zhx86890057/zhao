@@ -3,8 +3,6 @@ package com.zhao.upms.web.controller.wx;
 import com.zhao.upms.common.api.CommonResult;
 import com.zhao.upms.web.constant.WxAppConfigs;
 import com.zhao.upms.web.service.impl.WxAPI;
-import com.zhao.upms.web.wxBean.WxAccessToken;
-import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

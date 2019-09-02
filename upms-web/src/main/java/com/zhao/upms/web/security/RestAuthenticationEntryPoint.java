@@ -18,7 +18,8 @@ import java.io.IOException;
  * Created by macro on 2018/5/14.
  */
 @Component
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class
+RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");

@@ -21,7 +21,7 @@
     <contextName>SpringBootDemo</contextName>
     <property name="LOG_PATH" value="/home/logs" />
     <!--设置系统日志目录-->
-    <property name="APP_DIR" value="zhao" />
+    <property name="APP_DIR" value="invest" />
 
     <!-- 不带彩色的日志在控制台输出时候的设置 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -190,5 +190,24 @@
         <!-- 生产环境将请stdout,testfile去掉 -->
         <appender-ref ref="CONSOLE" />
     </root>
+
+    <!-- 异步输出 -->
+    <appender name="ASYNC-INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEINFO"/>
+    </appender>
+
+    <appender name="ASYNC-ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEERROR"/>
+    </appender>
 
 </configuration>

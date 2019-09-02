@@ -2,6 +2,7 @@ package com.zhao.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zhao.dao.domain.WxCorp;
 import com.zhao.upms.web.UpmsApplication;
 import com.zhao.upms.web.service.impl.WxAPI;
 import com.zhao.upms.web.wxBean.WxAccessToken;
@@ -63,7 +64,8 @@ public class Test2 {
     @Test
     public void test2(){
         String permanentCode = "sf66hs80-LElRHGyavvkmGj24RgFPLhhVW7KV-7denE";
-        WxAuthCorpInfo wxAPIAuthInfo = wxAPI.getAuthInfo("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
+        WxCorp wxAPIAuthInfo = wxAPI.getAuthInfo("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29" +
+                "-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
         WxAccessToken wxAccessToken = wxAPI.getCorpToken("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
         System.out.println(wxAPIAuthInfo);
         System.out.println(wxAccessToken);
