@@ -111,11 +111,12 @@ public class SuiteCallback {
                     log.info("推送SuiteTicket,suiteTicket = {}", suiteTicket);
                     appConfig.setSuiteTicket(suiteTicket);
                     //判断suiteAccessToken是否过期
-                    if(appConfig.getExpiresTime() < System.currentTimeMillis()){
+//                    if(appConfig.getExpiresTime() < System.currentTimeMillis()){
                         String suiteAccessToken = wxAPI.getSuiteAccessToken(appConfig);
                         String preAuthCode = wxAPI.getPreAuthCode(suiteAccessToken);
-                        log.info("suiteAccessToken = {}, preAuthCode ={}", suiteAccessToken, preAuthCode);
-                    }
+                        log.info("suiteId = {}, suiteAccessToken = {}, preAuthCode ={}", suiteId, suiteAccessToken,
+                                preAuthCode);
+//                    }
                     break;
                 // 变更通知，根据ChangeType区分消息类型
                 case "change_contact":

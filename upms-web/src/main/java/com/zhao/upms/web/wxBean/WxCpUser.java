@@ -1,5 +1,6 @@
 package com.zhao.upms.web.wxBean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,11 +16,14 @@ import java.util.List;
  * @author Daniel Qian
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class WxCpUser implements Serializable {
   private static final long serialVersionUID = -5696099236344075582L;
-  private String userId;
+  private String userid;
   private String name;
-  private Long[] departIds;
+  private Long[] department;
   private Integer[] orders;
   private String position;
   private String mobile;

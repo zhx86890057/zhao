@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhao.dao.domain.WxCorp;
 import com.zhao.upms.web.UpmsApplication;
 import com.zhao.upms.web.service.impl.WxAPI;
+import com.zhao.upms.web.service.impl.WxUserServiceImpl;
 import com.zhao.upms.web.wxBean.WxAccessToken;
 import com.zhao.upms.web.wxBean.WxAuthCorpInfo;
+import com.zhao.upms.web.wxBean.WxCpUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,11 +66,22 @@ public class Test2 {
     @Test
     public void test2(){
         String permanentCode = "sf66hs80-LElRHGyavvkmGj24RgFPLhhVW7KV-7denE";
-        WxCorp wxAPIAuthInfo = wxAPI.getAuthInfo("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29" +
-                "-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
-        WxAccessToken wxAccessToken = wxAPI.getCorpToken("8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io","ww70559ce8c6d3a12d", permanentCode);
-        System.out.println(wxAPIAuthInfo);
+        String suiteAccessToken = "io2vRnuV8vxCej7mFobUPRZA3VXCWf2yih8EnLw8lpOdXiPHHNvGhMQMmulVJjM0mZXLJBDFwU4ZJjyN0EdI4qpvvzrd8fNO1-xBUyWDOG5cFo-QLobMRvriwecGkt7R";
+        WxAccessToken wxAccessToken = wxAPI.getCorpToken(suiteAccessToken,"ww70559ce8c6d3a12d", permanentCode);
         System.out.println(wxAccessToken);
+    }
+
+    @Autowired
+    private WxUserServiceImpl wxUserService;
+    @Test
+    public void test3(){
+        String accessToken = "MskXGKYeBI7_k1-aM0utntHL0jJWY__S2ZLhm2AA8SheUCmA_Vwo4SVg1FASADeYK_zhLd2swH9vzK1VTmfBo3SlyiF5YLac99fFlCQz2qP8OEc1HflUSF_0mW6pUHzpAD6rzF-v3JomlmkFnqQrcr5sXmiUwXFvJo_TyWHdnMiMPCYuWwJmiZxum9MWfsHma13IXOcHplQ3uzpRjzqK5A";
+        WxCpUser zhaoHaiXiao = wxUserService.getById("ZhaoHaiXiao", accessToken);
+        System.out.println(zhaoHaiXiao);
+        WxCpUser wxCpUser = WxCpUser.builder().userid("fdsgfg").name("你好").department(new Long[]{1L}).build();
+//        wxUserService.create(wxCpUser, accessToken);
+        wxUserService.delete("fdsgfg", accessToken);
+//        wxUserService.update(wxCpUser, accessToken);
     }
 
 }

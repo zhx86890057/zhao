@@ -2,7 +2,6 @@ package com.zhao.upms.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.zhao.dao.domain.UmsMember;
 import com.zhao.upms.web.constant.WxCpApiPathConsts;
 import com.zhao.upms.web.constant.WxCpErrorMsgEnum;
 import com.zhao.upms.web.wxBean.WxCpUser;
@@ -35,7 +34,7 @@ public class WxUserServiceImpl {
      * @return
      */
     public WxCpUser getById(String userid, String accessToken){
-        String url = String.format(WxCpApiPathConsts.User.USER_GET, accessToken);
+        String url = String.format(WxCpApiPathConsts.User.USER_GET, accessToken, userid);
         WxCpUser wxCpUser = restTemplate.getForObject(WxCpApiPathConsts.getURL(url), WxCpUser.class);
         return wxCpUser;
     }

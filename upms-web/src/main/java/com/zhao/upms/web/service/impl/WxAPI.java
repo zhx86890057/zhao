@@ -53,20 +53,20 @@ public class WxAPI {
                 restTemplate.postForObject(WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_SUITE_TOKEN),
         JSON.toJSONString(params), JSONObject.class);
         checkErrCode(jsonObject);
-        String suiteAccussToken = jsonObject.getString("suite_access_token");
+        String suiteAccessToken = jsonObject.getString("suite_access_token");
         Integer expiresIn = jsonObject.getIntValue("expires_in");
-        appConfig.updateSuiteAccessToken(suiteAccussToken, expiresIn);
-        return suiteAccussToken;
+        appConfig.updateSuiteAccessToken(suiteAccessToken, expiresIn);
+        return suiteAccessToken;
     }
 
     /**
      * 获取预授权码
-     * @param suiteAccussToken
+     * @param suiteAccessToken
      * @return
      */
-    public String getPreAuthCode(String suiteAccussToken){
+    public String getPreAuthCode(String suiteAccessToken){
         String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PRE_AUTH_CODE) + "?suite_access_token={1}";
-        JSONObject jsonObject = restTemplate.getForObject(url, JSONObject.class, suiteAccussToken);
+        JSONObject jsonObject = restTemplate.getForObject(url, JSONObject.class, suiteAccessToken);
         System.out.println(jsonObject);
         checkErrCode(jsonObject);
         String preAuthCode = jsonObject.getString("pre_auth_code");
@@ -75,11 +75,11 @@ public class WxAPI {
 
     /**
      * 设置授权配置
-     * @param suiteAccussToken
+     * @param suiteAccessToken
      * @param preAuthCode
      */
-    public void setSessionInfo(String suiteAccussToken, String preAuthCode, int authType){
-        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.SET_SESSION_INFO) + suiteAccussToken;
+    public void setSessionInfo(String suiteAccessToken, String preAuthCode, int authType){
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.SET_SESSION_INFO) + suiteAccessToken;
         Map<String, Object> params= new HashMap<>();
         params.put("pre_auth_code", preAuthCode);
         Map<String, Integer> sessionMap = new HashMap<>();
@@ -170,8 +170,8 @@ public class WxAPI {
      * @return
      */
     @Transactional
-    public String getPermanentCode(String authCode,String suiteAccussToken) {
-        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PERMANENT_CODE) + suiteAccussToken;
+    public String getPermanentCode(String authCode,String suiteAccessToken) {
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_PERMANENT_CODE) + suiteAccessToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_code", authCode);
         JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);
@@ -201,8 +201,8 @@ public class WxAPI {
      * @param authCorpid
      * @param permanentCode
      */
-    public WxCorp getAuthInfo(String suiteAccussToken, String authCorpid, String permanentCode){
-        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_AUTH_INFO) + suiteAccussToken;
+    public WxCorp getAuthInfo(String suiteAccessToken, String authCorpid, String permanentCode){
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_AUTH_INFO) + suiteAccessToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_corpid", authCorpid);
         params.put("permanent_code", permanentCode);
@@ -218,8 +218,8 @@ public class WxAPI {
      * @param permanentCode
      * @return
      */
-    public WxAccessToken getCorpToken(String suiteAccussToken, String authCorpid, String permanentCode){
-        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_CORP_TOKEN) + suiteAccussToken;
+    public WxAccessToken getCorpToken(String suiteAccessToken, String authCorpid, String permanentCode){
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_CORP_TOKEN) + suiteAccessToken;
         Map<String, String> params= new HashMap<>();
         params.put("auth_corpid", authCorpid);
         params.put("permanent_code", permanentCode);
@@ -232,13 +232,13 @@ public class WxAPI {
 
     /**
      * 获取应用的管理员列表
-     * @param suiteAccussToken
+     * @param suiteAccessToken
      * @param corpid
      * @param agentid
      * @return
      */
-    public String getAdminList(String suiteAccussToken, String corpid, Integer agentid ) {
-        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_ADMIN_LIST) + suiteAccussToken;
+    public String getAdminList(String suiteAccessToken, String corpid, Integer agentid ) {
+        String url = WxCpApiPathConsts.getURL(WxCpApiPathConsts.Tp.GET_ADMIN_LIST) + suiteAccessToken;
         Map<String, Object> params= new HashMap<>();
         params.put("auth_corpid", corpid);
         params.put("agentid", agentid);
@@ -251,14 +251,14 @@ public class WxAPI {
 
     /**
      * 获取访问用户身份
-     * @param suiteAccussToken
+     * @param suiteAccessToken
      * @param code 通过成员授权获取到的code
      * @return
      */
-    public String getUserInfo3rd(String suiteAccussToken, String code) {
-        String url = String.format(WxCpApiPathConsts.getURL(GET_USER_INFO_3RD),suiteAccussToken, code);
+    public String getUserInfo3rd(String suiteAccessToken, String code) {
+        String url = String.format(WxCpApiPathConsts.getURL(GET_USER_INFO_3RD),suiteAccessToken, code);
         Map<String, Object> params= new HashMap<>();
-        params.put("access_token", suiteAccussToken);
+        params.put("access_token", suiteAccessToken);
         params.put("code", code);
         JSONObject jsonObject = restTemplate.getForObject(url, JSONObject.class);
         checkErrCode(jsonObject);
@@ -266,8 +266,8 @@ public class WxAPI {
         return jsonObject.getString("CorpId");
     }
 
-    public String getUserDetail3rd(String suiteAccussToken, String userTicket) {
-        String url = WxCpApiPathConsts.getURL(GET_USER_DETAIL_3RD) + suiteAccussToken;
+    public String getUserDetail3rd(String suiteAccessToken, String userTicket) {
+        String url = WxCpApiPathConsts.getURL(GET_USER_DETAIL_3RD) + suiteAccessToken;
         Map<String, Object> params= new HashMap<>();
         params.put("user_ticket", userTicket);
         JSONObject jsonObject = restTemplate.postForObject(url, JSON.toJSONString(params), JSONObject.class);

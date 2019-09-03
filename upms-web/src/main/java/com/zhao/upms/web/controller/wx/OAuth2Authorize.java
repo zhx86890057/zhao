@@ -37,8 +37,9 @@ public class OAuth2Authorize {
      */
     @GetMapping("/callback3rd")
     public String callback3rd(@RequestParam(name = "code") String code){
-        String suiteAccussToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
-        return wxAPI.getUserInfo3rd(suiteAccussToken, code);
+        String suiteAccessToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29" +
+                "-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
+        return wxAPI.getUserInfo3rd(suiteAccessToken, code);
     }
 
     /**
@@ -48,7 +49,8 @@ public class OAuth2Authorize {
      */
     @GetMapping("/callbackCorp")
     public String callbackCorp(@RequestParam(name = "code") String code){
-        String suiteAccussToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
-        return wxAPI.getUserInfo3rd(suiteAccussToken, code);
+        String suiteAccessToken = "8qibKlIP0fBCR1FvfoxLTrQuzGRXmzYQAyjdINfo1GR9kfIFmI16aUMqMEGS29" +
+                "-duhNhbDY7G7_4iuBz5BEmVuzYxOJ28QsNsdrMNNQOm2H5pTZnYJVvo1VzXi77K2io";
+        return wxAPI.getUserInfo3rd(suiteAccessToken, code);
     }
 }

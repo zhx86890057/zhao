@@ -19,12 +19,19 @@ public class WxAppConfigs {
     public static final String token = "5FBgXQ2Y45f5PpgsqleZLnGaKAh2PL";
     public static final String encodingAESKey = "HJbK12JTl0pHzbwlgM5vskDUxzlmfwtN9BVaEpW2j7c";
 
+
+    public static final String suiteID2 = "ww3d23b50f43283627";
+    public static final String secret2 = "rm16HcIAmBpJlozy1nNx9LV-WduFiYT6hclnkMhpuJA";
+    public static final String token2 = "fiQqzaBgawMgn";
+    public static final String encodingAESKey2 = "p54bgbSHV7XmTK5WrjsCdgndEDeaAFvRYtHG3ZDoto0";
     private static Map<String, AppConfig> configMap = Maps.newHashMap();
 
     @PostConstruct
     public void init() {
         configMap.put(suiteID,
                 AppConfig.builder().suiteID(suiteID).secret(secret).token(token).encodingAESKey(encodingAESKey).build());
+        configMap.put(suiteID2,
+                AppConfig.builder().suiteID(suiteID2).secret(secret2).token(token2).encodingAESKey(encodingAESKey2).build());
     }
 
     public static AppConfig getAppConfig(String suiteID){

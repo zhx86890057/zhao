@@ -32,7 +32,7 @@ public class ProviderAuthorize {
             log.error("未找到对应suiteId={}的配置，请核实！", suiteId);
             return CommonResult.failed(String.format("未找到对应suiteId=[%d]的配置，请核实！", suiteId));
         }
-        String baseUrl = "http://2panth.natappfree.cc";
+        String baseUrl = "http://jmsfkd.natappfree.cc";
         String redirectUri = baseUrl + "/wx/install/installCallback?suiteId=" + suiteId;
         //查询第三方应用，获取预授权码
         String preAuthCode = wxAPI.getPreAuthCode(appConfig.getSuiteAccessToken());
